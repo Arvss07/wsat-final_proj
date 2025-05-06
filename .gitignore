@@ -1,0 +1,18 @@
+# Composer dependencies
+/vendor/
+
+# Environment variables
+/.env
+
+# Examle environment variables
+/.env.example
+
+# User uploads
+/uploads/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE configuration
+/.vscode/
