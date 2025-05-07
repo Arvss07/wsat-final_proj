@@ -84,6 +84,14 @@ switch ($page) {
         $page_path = __DIR__ . '/pages/register.php';
         $page_title = 'Register';
         break;
+    case 'password_reset_request':
+        $page_path = __DIR__ . '/pages/password_reset_request.php';
+        $page_title = 'Request Password Reset';
+        break;
+    case 'password_reset_form':
+        $page_path = __DIR__ . '/pages/password_reset_form.php';
+        $page_title = 'Reset Password';
+        break;
     case 'logout':
         // Handle logout logic here (e.g., in api/auth/logout_handler.php or directly)
         session_unset();

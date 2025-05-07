@@ -33,7 +33,7 @@ CREATE TABLE `users` (
 -- Dumping data for table `users` (Initial Admin)
 -- IMPORTANT: Replace 'YOUR_BCRYPT_HASHED_PASSWORD_HERE' with the actual bcrypt hash of 'admin123'
 INSERT INTO `users` (`id`, `role_id`, `name`, `email`, `password`, `is_blocked`) VALUES
-('44444444-4444-4444-4444-444444444444', '11111111-1111-1111-1111-111111111111', 'Administrator', 'admin@example.com', 'YOUR_BCRYPT_HASHED_PASSWORD_HERE', FALSE);
+('44444444-4444-4444-4444-444444444444', '11111111-1111-1111-1111-111111111111', 'Administrator', 'admin@example.com', '$2y$10$B0dywf2LVWQ.kfeubmplZeUNdMTwhnI9wOpx5E654s3Dbra2FIb0O', FALSE);
 
 -- Table structure for table `categories`
 CREATE TABLE `categories` (
