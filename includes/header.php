@@ -45,12 +45,11 @@ if (!function_exists('asset')) {
                         <?php endif; ?>
                         <?php if ($_SESSION['role'] === 'Seller'): ?>
                             <li class="nav-item"><a class="nav-link" href="index.php?page=seller/dashboard">Seller Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link" href="index.php?page=my_products">My Products</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?page=seller/my_products">My Products</a></li>
+                            <li class="nav-item"><a class="nav-link" href="index.php?page=seller/manage_orders">Manage Orders</a></li>
                         <?php endif; ?>
-                        <?php if ($_SESSION['role'] !== 'Admin'): // Show My Products and Cart for non-Admin users ?>
-                            <?php if ($_SESSION['role'] !== 'Seller'): // Avoid duplicating My Products for Seller ?>
-                                <!-- <li class="nav-item"><a class="nav-link" href="index.php?page=my_products">My Products</a></li> -->
-                            <?php endif; ?>
+                        <?php if ($_SESSION['role'] !== 'Admin' && $_SESSION['role'] !== 'Seller'): // Show Cart only for Shoppers 
+                        ?>
                             <li class="nav-item"><a class="nav-link" href="index.php?page=cart">Cart</a></li>
                         <?php endif; ?>
                         <li class="nav-item"><a class="nav-link" href="index.php?page=logout">Logout</a></li>

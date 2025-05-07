@@ -44,6 +44,15 @@ CREATE TABLE `categories` (
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Dumping data for table `categories`
+INSERT INTO `categories` (`id`, `name`, `description`) VALUES
+('SHOE-CAT-UUID-001', 'Running Shoes', 'Shoes designed for running and jogging'),
+('SHOE-CAT-UUID-002', 'Basketball Shoes', 'High-top and low-top shoes for basketball'),
+('SHOE-CAT-UUID-003', 'Casual Sneakers', 'Comfortable sneakers for everyday wear'),
+('SHOE-CAT-UUID-004', 'Formal Shoes', 'Dress shoes for formal occasions'),
+('SHOE-CAT-UUID-005', 'Sandals & Flip-flops', 'Open footwear for warm weather'),
+('SHOE-CAT-UUID-006', 'Boots', 'Durable footwear for various conditions');
+
 -- Table structure for table `products`
 CREATE TABLE `products` (
   `id` VARCHAR(36) PRIMARY KEY,

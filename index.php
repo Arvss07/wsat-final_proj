@@ -38,7 +38,7 @@ $protected_pages = ['profile', 'cart', 'checkout', 'orders', 'logout'];
 
 // Define pages specific to roles
 $admin_pages = ['admin/dashboard', 'admin/users', 'admin/products', 'admin/settings'];
-$seller_pages = ['seller/dashboard', 'seller/products', 'seller/orders', 'seller/settings'];
+$seller_pages = ['seller/dashboard', 'seller/my_products', 'seller/add_product', 'seller/edit_product', 'seller/manage_orders', 'seller/orders', 'seller/settings']; // Added seller/manage_orders
 
 $page_path = '';
 $page_title = ucfirst(str_replace("_", " ", $page)); // Default page title
@@ -140,9 +140,25 @@ switch ($page) {
     // ... other admin pages
 
     // Seller Pages
-    case 'seller/products':
-        $page_path = __DIR__ . '/seller/products.php';
-        $page_title = 'Manage Products';
+    case 'seller/dashboard': // Added for the main seller dashboard link
+        $page_path = __DIR__ . '/seller/my_products.php';
+        $page_title = 'Seller Dashboard';
+        break;
+    case 'seller/my_products': // Keep this for direct access or other links
+        $page_path = __DIR__ . '/seller/my_products.php';
+        $page_title = 'My Products';
+        break;
+    case 'seller/add_product': // Placeholder for add product page
+        $page_path = __DIR__ . '/seller/add_product.php';
+        $page_title = 'Add New Product';
+        break;
+    case 'seller/edit_product': // Placeholder for edit product page
+        $page_path = __DIR__ . '/seller/edit_product.php';
+        $page_title = 'Edit Product';
+        break;
+    case 'seller/manage_orders': // Added for managing shopper orders
+        $page_path = __DIR__ . '/seller/manage_orders.php';
+        $page_title = 'Manage Orders';
         break;
     // ... other seller pages
 
