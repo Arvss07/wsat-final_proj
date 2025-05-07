@@ -89,6 +89,7 @@ $page_title = $product ? "View Product: " . htmlspecialchars($product['name']) :
                 <h4>Product Description</h4>
                 <p><?php echo nl2br(htmlspecialchars($product['description'])); ?></p>
                 <hr>
+                <p><strong>Product ID:</strong> <?php echo htmlspecialchars($product['id']); ?></p>
                 <p><strong>Price:</strong> ₱<?php echo htmlspecialchars(number_format($product['price'], 2)); ?></p>
                 <p><strong>Stock Quantity:</strong> <?php echo htmlspecialchars($product['stock_quantity']); ?></p>
                 <p><strong>Date Added:</strong> <?php echo htmlspecialchars(date("F j, Y, g:i a", strtotime($product['created_at']))); ?></p>

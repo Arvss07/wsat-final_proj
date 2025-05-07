@@ -250,3 +250,48 @@ if (!function_exists('sendOrderConfirmationEmail')) {
         }
     }
 }
+
+if (!function_exists('sendGenericEmail')) {
+    /**
+     * Sends a generic email.
+     *
+     * @param string $toEmail The recipient's email address.
+     * @param string $subject The email subject.
+     * @param string $htmlBody The HTML email body.
+     * @param string $altBody The plain text alternative body (optional).
+     * @param string $recipientName The recipient's name (optional, for personalization).
+     * @return bool True if email was sent successfully, false otherwise.
+     */
+    function sendGenericEmail(string $toEmail, string $subject, string $htmlBody, string $altBody = '', string $recipientName = 'User'): bool
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Server settings from .env
+            $mail->SMTPDebug = SMTP::DEBUG_OFF; // Disable verbose debug output
+            $mail->isSMTP();
+            $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.example.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $_ENV['MAIL_USERNAME'] ?? 'user@example.com';
+            $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? 'secret';
+            $mail->SMTPSecure = ($_ENV['MAIL_ENCRYPTION'] ?? 'tls') === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = (int)($_ENV['MAIL_PORT'] ?? 587);
+
+            // Recipients
+            $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@example.com', $_ENV['MAIL_FROM_NAME'] ?? 'Shoe Store');
+            $mail->addAddress($toEmail, $recipientName);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = $htmlBody;
+            $mail->AltBody = !empty($altBody) ? $altBody : strip_tags($htmlBody); // Basic alt body if not provided
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            error_log("Mailer Error (Generic Email to {$toEmail} with subject '{$subject}'): {$mail->ErrorInfo}");
+            return false;
+        }
+    }
+}

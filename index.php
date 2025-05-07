@@ -38,7 +38,7 @@ $protected_pages = ['profile', 'cart', 'checkout', 'orders', 'logout'];
 
 // Define pages specific to roles
 $admin_pages = ['admin/dashboard', 'admin/users', 'admin/products', 'admin/settings'];
-$seller_pages = ['seller/dashboard', 'seller/my_products', 'seller/add_product', 'seller/edit_product', 'seller/manage_orders', 'seller/orders', 'seller/settings', 'seller/view_product', 'seller/delete_product']; // Added seller/view_product and seller/delete_product
+$seller_pages = ['seller/dashboard', 'seller/my_products', 'seller/add_product', 'seller/edit_product', 'seller/manage_orders', 'seller/orders', 'seller/settings', 'seller/view_product', 'seller/delete_product', 'seller/view_order_details', 'seller/edit_order', 'seller/cancel_order']; // Added seller/view_product and seller/delete_product
 
 $page_path = '';
 $page_title = ucfirst(str_replace("_", " ", $page)); // Default page title
@@ -158,6 +158,18 @@ switch ($page) {
     case 'seller/delete_product':
         $page_path = __DIR__ . '/seller/delete_product.php';
         $page_title = 'Delete Product'; // Title might not be shown as it usually redirects
+        break;
+    case 'seller/view_order_details':
+        $page_path = __DIR__ . '/seller/view_order_details.php';
+        $page_title = 'View Order Details';
+        break;
+    case 'seller/edit_order':
+        $page_path = __DIR__ . '/seller/edit_order.php'; // You may need to create this file
+        $page_title = 'Edit Order';
+        break;
+    case 'seller/cancel_order':
+        $page_path = __DIR__ . '/seller/cancel_order.php'; // You may need to create this file
+        $page_title = 'Cancel Order';
         break;
     // ... other seller pages
 
