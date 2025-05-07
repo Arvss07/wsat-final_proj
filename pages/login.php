@@ -1,9 +1,11 @@
 <?php
-// Placeholder for login logic
-// For now, just a simple message
+// This page might have messages passed via GET from registration or other actions
+$error_message = $_GET['error'] ?? null;
+$success_message = $_GET['success'] ?? null;
 
-// If login form is submitted, you would handle it here
-// Example: include __DIR__ . '/../api/auth/login_handler.php';
+// Preserve old email input if validation fails and redirects back
+$old_email = $_SESSION['old_login_input']['email'] ?? '';
+unset($_SESSION['old_login_input']); // Clear after use
 
 ?>
 <!DOCTYPE html>
@@ -19,21 +21,40 @@
 <body>
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-6 col-lg-5">
                 <div class="card">
                     <div class="card-header">
                         <h3>Login</h3>
                     </div>
                     <div class="card-body">
-                        <?php if (isset($_GET['error'])): ?>
-                            <div class="alert alert-danger"><?php echo htmlspecialchars($_GET['error']); ?></div>
+                        <?php if ($error_message): ?>
+                            <div class="alert alert-danger"><?php echo htmlspecialchars($error_message); ?></div>
                         <?php endif; ?>
-                        <?php if (isset($_GET['message'])): ?>
-                            <div class="alert alert-info"><?php echo htmlspecialchars($_GET['message']); ?></div>
+                        <?php if ($success_message): ?>
+                            <div class="alert alert-success"><?php echo htmlspecialchars($success_message); ?></div>
                         <?php endif; ?>
-                        <p>Login form will go here.</p>
-                        <p>For now, this is a placeholder. Please implement the login form and logic.</p>
-                        <a href="index.php?page=register">Don't have an account? Register here.</a>
+
+                        <form action="api/auth/login_handler.php" method="POST">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($old_email); ?>" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
+                                <label class="form-check-label" for="remember_me">Remember me</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                        </form>
+                        <p class="mt-3 text-center">
+                            <a href="index.php?page=password_reset_request">Forgot your password?</a>
+                        </p>
+                        <p class="mt-2 text-center">
+                            Don't have an account? <a href="index.php?page=register">Register here</a>.
+                        </p>
                     </div>
                 </div>
             </div>
