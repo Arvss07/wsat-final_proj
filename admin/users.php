@@ -4,6 +4,18 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Determine base URL path (root-relative for assets)
+// This assumes index.php (or the main entry script) is at the project's web root.
+$script_name_dir = dirname($_SERVER['SCRIPT_NAME']); // e.g., / or /subdir
+
+// Ensure $base_url ends with a slash, and is '/' if at domain root.
+if ($script_name_dir === '/' || $script_name_dir === '\\\\') {
+    $base_url = '/'; // Project at domain root
+} else {
+    // For subdir, ensure it's like /subdir/
+    $base_url = rtrim($script_name_dir, '/') . '/';
+}
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
     header("Location: index.php?page=login&error=Unauthorized+access");
     exit;
@@ -171,11 +183,11 @@ if ($result_roles) {
 }
 
 $user_to_edit_data = null;
-$user_address_data = null; // Initialize address data variable
+$user_address_data = null;
 
 if ($action === 'edit' && $user_id_to_edit) {
-    // Fetch user data including timestamps
-    $stmt_user = $conn->prepare("SELECT id, name, email, role_id, is_blocked, created_at, updated_at FROM users WHERE id = ?");
+    // Fetch user data including timestamps and profile picture path
+    $stmt_user = $conn->prepare("SELECT id, name, email, role_id, is_blocked, created_at, updated_at, profile_picture_path FROM users WHERE id = ?");
     $stmt_user->bind_param("s", $user_id_to_edit);
     $stmt_user->execute();
     $result_user = $stmt_user->get_result();
@@ -233,6 +245,26 @@ if ($action === 'edit' && $user_id_to_edit) {
         <form method="POST" action="index.php?page=admin/users">
             <?php if ($action === 'edit'): ?>
                 <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_to_edit_data['id']); ?>">
+            <?php endif; ?>
+
+            <!-- Profile Picture Display -->
+            <?php if ($action === 'edit'): ?>
+                <div class="mb-3">
+                    <label class="form-label">Profile Picture</label><br>
+                    <?php
+                    $default_avatar_path = 'assets/img/default_avatar.png';
+                    $profile_pic_to_show = $default_avatar_path; // Default avatar
+                    $alt_text = 'Default Avatar';
+                    if (!empty($user_to_edit_data['profile_picture_path'])) {
+                        $server_file_path = __DIR__ . '/../' . $user_to_edit_data['profile_picture_path'];
+                        if (file_exists($server_file_path)) {
+                            $profile_pic_to_show = ltrim($user_to_edit_data['profile_picture_path'], '/');
+                            $alt_text = 'Profile Picture';
+                        }
+                    }
+                    ?>
+                    <img src="<?php echo $base_url . htmlspecialchars($profile_pic_to_show); ?>" alt="<?php echo htmlspecialchars($alt_text); ?>" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;"><br>
+                </div>
             <?php endif; ?>
 
             <div class="mb-3">
@@ -352,12 +384,14 @@ if ($action === 'edit' && $user_id_to_edit) {
                                 while ($user = $result_all_users->fetch_assoc()) {
                                     echo "<tr>";
                                     echo "<td>";
+                                    $default_avatar_list_path = 'assets/img/default_avatar.png';
                                     if (!empty($user['profile_picture_path']) && file_exists(__DIR__ . '/../' . $user['profile_picture_path'])) {
-                                        echo "<img src='" . htmlspecialchars($user['profile_picture_path']) . "' alt='" . htmlspecialchars($user['name']) . "' style='width: 50px; height: 50px; object-fit: cover; border-radius: 50%;'>";
+                                        echo "<img src='" . $base_url . htmlspecialchars(ltrim($user['profile_picture_path'], '/')) . "' alt='" . htmlspecialchars($user['name']) . "' style='width: 50px; height: 50px; object-fit: cover; border-radius: 50%;'>";
                                     } else {
-                                        echo "<img src='assets/img/default_avatar.png' alt='Default Avatar' style='width: 50px; height: 50px; object-fit: cover; border-radius: 50%;'>";
+                                        echo "<img src='" . $base_url . htmlspecialchars($default_avatar_list_path) . "' alt='Default Avatar' style='width: 50px; height: 50px; object-fit: cover; border-radius: 50%;'>";
                                     }
                                     echo "</td>";
+
                                     echo "<td>" . htmlspecialchars($user['name']) . "</td>";
                                     echo "<td>" . htmlspecialchars($user['email']) . "</td>";
                                     echo "<td>" . htmlspecialchars($user['role_name']) . "</td>";
