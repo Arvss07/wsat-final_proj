@@ -69,6 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
+<!-- DataTables CSS -->
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
 <div class="container-fluid px-4">
     <h1 class="mt-4"><?php echo htmlspecialchars($page_title); ?></h1>
     <ol class="breadcrumb mb-4">
@@ -145,7 +148,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
-    <p class="text-muted"><small>Note: Admin product management currently supports permanent deletion. Soft deletion (marking as inactive) can be added if an 'is_active' field is introduced to the products table. DataTables JS library is not yet integrated for advanced table features.</small></p>
 </div>
 
-<!-- Include DataTables CSS/JS in footer if you decide to use it -->
+<!-- DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#productsDataTable').DataTable();
+    });
+</script>

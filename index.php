@@ -125,6 +125,18 @@ switch ($page) {
         $page_path = __DIR__ . '/admin/dashboard.php';
         $page_title = 'Admin Dashboard';
         break;
+    case 'admin/users':
+        $page_path = __DIR__ . '/admin/users.php';
+        $page_title = 'Manage Users';
+        break;
+    case 'admin/products':
+        $page_path = __DIR__ . '/admin/products.php';
+        $page_title = 'Manage Products';
+        break;
+    case 'admin/settings':
+        $page_path = __DIR__ . '/admin/settings.php';
+        $page_title = 'Admin Settings';
+        break;
     // ... other admin pages
 
     // Seller Pages

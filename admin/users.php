@@ -80,16 +80,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user_id = $_POST['user_id'] ?? '';
             $name = trim($_POST['name'] ?? '');
             $email = trim($_POST['email'] ?? '');
-            $password = $_POST['password'] ?? ''; // Optional: only if changing
-            $role_id = $_POST['role_id'] ?? ''; // Admins cannot change roles as per requirements
+            $role_id = $_POST['role_id'] ?? ''; // Read the role_id from POST
             $is_blocked = isset($_POST['is_blocked']) ? 1 : 0;
 
-            if (empty($user_id) || empty($name) || empty($email)) {
-                $errors[] = "User ID, Name, and Email are required.";
+            if (empty($user_id) || empty($name) || empty($email) || empty($role_id)) { // Added role_id to check
+                $errors[] = "User ID, Name, Email, and Role are required.";
             }
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors[] = "Invalid email format.";
             }
+
+            // Prevent admin from changing their own role via this form
+            if ($user_id === $_SESSION['user_id'] && $user_to_edit_data && $role_id !== $user_to_edit_data['role_id']) {
+                $errors[] = "You cannot change your own role through this form.";
+            }
+
             // Check if email exists for another user
             $stmt_check = $conn->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
             $stmt_check->bind_param("ss", $email, $user_id);
@@ -100,14 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_check->close();
 
             if (empty($errors)) {
-                if (!empty($password)) {
-                    $hashed_password = hashPassword($password);
-                    $stmt_edit = $conn->prepare("UPDATE users SET name = ?, email = ?, password = ?, is_blocked = ? WHERE id = ?");
-                    $stmt_edit->bind_param("sssisi", $name, $email, $hashed_password, $is_blocked, $user_id);
-                } else {
-                    $stmt_edit = $conn->prepare("UPDATE users SET name = ?, email = ?, is_blocked = ? WHERE id = ?");
-                    $stmt_edit->bind_param("ssisi", $name, $email, $is_blocked, $user_id);
-                }
+                $stmt_edit = $conn->prepare("UPDATE users SET name = ?, email = ?, role_id = ?, is_blocked = ? WHERE id = ?");
+                $stmt_edit->bind_param("sssis", $name, $email, $role_id, $is_blocked, $user_id); // Added role_id
                 if ($stmt_edit->execute()) {
                     $feedback[] = "User updated successfully.";
                 } else {
@@ -172,13 +171,31 @@ if ($result_roles) {
 }
 
 $user_to_edit_data = null;
+$user_address_data = null; // Initialize address data variable
+
 if ($action === 'edit' && $user_id_to_edit) {
-    $stmt_user = $conn->prepare("SELECT id, name, email, role_id, is_blocked FROM users WHERE id = ?");
+    // Fetch user data including timestamps
+    $stmt_user = $conn->prepare("SELECT id, name, email, role_id, is_blocked, created_at, updated_at FROM users WHERE id = ?");
     $stmt_user->bind_param("s", $user_id_to_edit);
     $stmt_user->execute();
     $result_user = $stmt_user->get_result();
     if ($result_user->num_rows === 1) {
         $user_to_edit_data = $result_user->fetch_assoc();
+
+        // Fetch user's address (city and province), prioritizing default
+        $stmt_address = $conn->prepare("SELECT city, province FROM addresses WHERE user_id = ? ORDER BY is_default DESC LIMIT 1");
+        if ($stmt_address) {
+            $stmt_address->bind_param("s", $user_id_to_edit);
+            $stmt_address->execute();
+            $result_address = $stmt_address->get_result();
+            if ($result_address->num_rows === 1) {
+                $user_address_data = $result_address->fetch_assoc();
+            }
+            $stmt_address->close();
+        } else {
+            // Optional: Log error if address statement preparation fails
+            error_log("Failed to prepare address statement: " . $conn->error);
+        }
     } else {
         $errors[] = "User not found for editing.";
         $action = 'list'; // Revert to list view
@@ -187,6 +204,9 @@ if ($action === 'edit' && $user_id_to_edit) {
 }
 
 ?>
+
+<!-- DataTables CSS -->
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
 <div class="container-fluid px-4">
     <h1 class="mt-4"><?php echo htmlspecialchars($page_title); ?></h1>
@@ -223,26 +243,59 @@ if ($action === 'edit' && $user_id_to_edit) {
                 <label for="email" class="form-label">Email address</label>
                 <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($user_to_edit_data['email'] ?? ''); ?>" required>
             </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Password <?php if ($action === 'edit') echo "(leave blank to keep current)"; ?></label>
-                <input type="password" class="form-control" id="password" name="password" <?php echo $action === 'add' ? 'required' : ''; ?>>
-            </div>
+
+            <?php if ($action === 'edit' && isset($user_to_edit_data['created_at'])): ?>
+                <div class="mb-3">
+                    <label for="created_at" class="form-label">Date Created</label>
+                    <input type="text" class="form-control" id="created_at" name="created_at" value="<?php echo htmlspecialchars(date('F j, Y, g:i a', strtotime($user_to_edit_data['created_at']))); ?>" readonly>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($action === 'edit' && isset($user_to_edit_data['updated_at'])): ?>
+                <div class="mb-3">
+                    <label for="updated_at" class="form-label">Last Updated</label>
+                    <input type="text" class="form-control" id="updated_at" name="updated_at" value="<?php echo htmlspecialchars(date('F j, Y, g:i a', strtotime($user_to_edit_data['updated_at']))); ?>" readonly>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($action === 'edit' && $user_address_data): ?>
+                <?php if (isset($user_address_data['city'])): ?>
+                    <div class="mb-3">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="city" name="city" value="<?php echo htmlspecialchars($user_address_data['city']); ?>" readonly>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (isset($user_address_data['province'])): ?>
+                    <div class="mb-3">
+                        <label for="province" class="form-label">Province</label>
+                        <input type="text" class="form-control" id="province" name="province" value="<?php echo htmlspecialchars($user_address_data['province']); ?>" readonly>
+                    </div>
+                <?php endif; ?>
+            <?php endif; // end if $user_address_data 
+            ?>
+
+            <?php if ($action === 'add'): ?>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+            <?php endif; ?>
             <div class="mb-3">
                 <label for="role_id" class="form-label">Role</label>
-                <select class="form-select" id="role_id" name="role_id" required <?php if ($action === 'edit') echo 'disabled'; /* Admins cannot change user roles */ ?>>
+                <select class="form-select" id="role_id" name="role_id" required
+                    <?php
+                    if ($action === 'edit' && $user_to_edit_data && isset($_SESSION['user_id']) && $user_to_edit_data['id'] === $_SESSION['user_id']) {
+                        echo 'disabled';
+                    }
+                    ?>>
                     <option value="">Select Role</option>
                     <?php foreach ($roles as $role): ?>
-                        <?php
-                        // For 'add' action, skip the 'Admin' role.
-                        if ($action === 'add' && $role['name'] === 'Admin') {
-                            continue;
-                        }
-                        ?>
                         <option value="<?php echo htmlspecialchars($role['id']); ?>"
                             <?php
-                            if ($action === 'edit' && $user_to_edit_data && $user_to_edit_data['role_id'] === $role['id']) {
+                            if ($user_to_edit_data && $user_to_edit_data['role_id'] === $role['id']) { // For edit mode, select current role
                                 echo 'selected';
-                            } elseif ($action === 'add' && $role['name'] === 'Shopper') { // Default to Shopper for new users
+                            } elseif ($action === 'add' && !($user_to_edit_data) && $role['name'] === 'Shopper') { // Default to Shopper for new users (when not editing)
                                 echo 'selected';
                             }
                             ?>>
@@ -250,7 +303,11 @@ if ($action === 'edit' && $user_id_to_edit) {
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <?php if ($action === 'edit'): ?> <small class="form-text text-muted">Role cannot be changed after creation.</small><?php endif; ?>
+                <?php
+                if ($action === 'edit' && $user_to_edit_data && isset($_SESSION['user_id']) && $user_to_edit_data['id'] === $_SESSION['user_id']) {
+                    echo '<small class="form-text text-muted">You cannot change your own role.</small>';
+                }
+                ?>
             </div>
             <div class="mb-3 form-check">
                 <input type="checkbox" class="form-check-input" id="is_blocked" name="is_blocked" value="1" <?php echo ($user_to_edit_data['is_blocked'] ?? 0) ? 'checked' : ''; ?>>
@@ -332,16 +389,20 @@ if ($action === 'edit' && $user_id_to_edit) {
                 </div>
             </div>
         </div>
-        <p class="text-muted"><small>Note: For simplicity, DataTables JS library is not yet integrated. Pagination and advanced searching/sorting would typically be handled by such a library or server-side logic.</small></p>
     <?php endif; ?>
 </div>
 
-<!-- Include DataTables CSS/JS in footer if you decide to use it -->
-<!-- <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet"> -->
-<!-- <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script> -->
-<!-- <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script> -->
-<!-- <script>
-    // $(document).ready(function() {
-    //     $('#usersDataTable').DataTable();
-    // });
-</script> -->
+<!-- DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#usersDataTable').DataTable();
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            $('.alert-success, .alert-danger').fadeOut('slow');
+        }, 5000); // 5000 milliseconds = 5 seconds
+    });
+</script>

@@ -84,6 +84,7 @@ CREATE TABLE `addresses` (
   `address_type` ENUM('shipping', 'billing') NOT NULL,
   `street` VARCHAR(255) NOT NULL,
   `city` VARCHAR(100) NOT NULL,
+  `province` VARCHAR(100) NOT NULL,
   `postal_code` VARCHAR(20) NOT NULL,
   `country` VARCHAR(100) NOT NULL,
   `is_default` BOOLEAN NOT NULL DEFAULT FALSE,
