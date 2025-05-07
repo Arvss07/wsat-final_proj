@@ -72,6 +72,62 @@ if (!function_exists('sendPasswordResetEmail')) {
     }
 }
 
+if (!function_exists('sendWelcomeEmail')) {
+    /**
+     * Sends a welcome email to a new user.
+     *
+     * @param string $toEmail The recipient's email address.
+     * @param string $username The recipient's username.
+     * @return bool True if email was sent successfully, false otherwise.
+     */
+    function sendWelcomeEmail(string $toEmail, string $username): bool
+    {
+        $mail = new PHPMailer(true);
+        $emailTemplatePath = dirname(__DIR__) . '/templates/emails/welcome_email.php';
+
+        if (!file_exists($emailTemplatePath)) {
+            error_log("Welcome email template not found at {$emailTemplatePath}");
+            return false;
+        }
+
+        // Start output buffering to capture the email content
+        ob_start();
+        // Make $username available to the template
+        include $emailTemplatePath;
+        $emailBody = ob_get_clean();
+
+        try {
+            // Server settings from .env
+            $mail->SMTPDebug = SMTP::DEBUG_OFF; // Disable verbose debug output for production
+            $mail->isSMTP();
+            $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.example.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $_ENV['MAIL_USERNAME'] ?? 'user@example.com';
+            $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? 'secret';
+            $mail->SMTPSecure = ($_ENV['MAIL_ENCRYPTION'] ?? 'tls') === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = (int)($_ENV['MAIL_PORT'] ?? 587);
+
+            // Recipients
+            $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@example.com', $_ENV['MAIL_FROM_NAME'] ?? 'Our Platform');
+            $mail->addAddress($toEmail, $username);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Welcome to ' . ($_ENV['APP_NAME'] ?? 'Our Platform') . '!';
+            $mail->Body    = $emailBody;
+            // Consider creating a plain text version for $mail->AltBody if needed
+            $mail->AltBody = 'Welcome to ' . ($_ENV['APP_NAME'] ?? 'Our Platform') . '! Thank you for registering.';
+
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            error_log("Mailer Error (Welcome Email to {$toEmail}): {$mail->ErrorInfo}");
+            return false;
+        }
+    }
+}
+
 if (!function_exists('sendRegistrationConfirmationEmail')) {
     /**
      * Sends a registration confirmation email.

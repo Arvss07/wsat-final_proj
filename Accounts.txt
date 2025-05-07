@@ -1,0 +1,13 @@
+Admin account
+email: admin@example.com
+password: admin123
+
+
+Shopper account
+email: shopper@example.com
+password: admin123
+
+Seller account
+email: seller@example.com
+password: admin123
+    

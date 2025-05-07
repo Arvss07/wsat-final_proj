@@ -9,6 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/../../config/database.php'; // Establishes $conn and loads .env
 require_once __DIR__ . '/../../utils/hash.php';      // For hashPassword()
 require_once __DIR__ . '/../../utils/uuid.php';      // For generateUuidV4()
+require_once __DIR__ . '/../../utils/mailer.php';    // For sendWelcomeEmail()
 
 // Define a base URL for redirects, using APP_URL from .env
 $base_url = rtrim($_ENV['APP_URL'] ?? 'http://localhost/wsat-final_proj', '/');
@@ -97,6 +98,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($insert_stmt->execute()) {
         unset($_SESSION['old_register_input']); // Clear old input on success
+
+        // Send welcome email
+        if (!sendWelcomeEmail($email, $name)) {
+            // Log email sending failure, but don't block registration
+            error_log("Failed to send welcome email to {$email}.");
+        }
+
         header("Location: " . $base_url . "/index.php?page=login&success=Registration+successful.+Please+login.");
         exit;
     } else {
