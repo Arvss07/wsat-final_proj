@@ -4,7 +4,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require_once __DIR__ . '/../../vendor/autoload.php'; // Ensure PHPMailer is loaded
+require_once dirname(__DIR__) . '/vendor/autoload.php'; // Ensure PHPMailer is loaded
 
 if (!function_exists('sendPasswordResetEmail')) {
     /**
@@ -22,7 +22,7 @@ if (!function_exists('sendPasswordResetEmail')) {
 
         try {
             // Server settings from .env
-            $mail->SMTPDebug = $_ENV['DEBUG'] === 'true' ? SMTP::DEBUG_SERVER : SMTP::DEBUG_OFF; // Enable verbose debug output in debug mode
+            $mail->SMTPDebug = SMTP::DEBUG_OFF; // Disable verbose debug output
             $mail->isSMTP();
             $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.example.com';
             $mail->SMTPAuth   = true;
@@ -67,6 +67,129 @@ if (!function_exists('sendPasswordResetEmail')) {
         } catch (Exception $e) {
             // Log the error in a real application
             error_log("Mailer Error (Password Reset OTP): {$mail->ErrorInfo}");
+            return false;
+        }
+    }
+}
+
+if (!function_exists('sendRegistrationConfirmationEmail')) {
+    /**
+     * Sends a registration confirmation email.
+     *
+     * @param string $email The recipient's email address.
+     * @param string $name The recipient's name.
+     * @return bool True if email was sent successfully, false otherwise.
+     */
+    function sendRegistrationConfirmationEmail(string $email, string $name): bool
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Server settings
+            $mail->SMTPDebug = SMTP::DEBUG_OFF; // Disable verbose debug output
+            $mail->isSMTP();
+            $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.example.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $_ENV['MAIL_USERNAME'] ?? 'user@example.com';
+            $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? 'secret';
+            $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION'] === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = (int)($_ENV['MAIL_PORT'] ?? 587);
+
+            // Recipients
+            $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@example.com', $_ENV['MAIL_FROM_NAME'] ?? 'Shoe Store');
+            $mail->addAddress($email, $name);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Welcome to ' . ($_ENV['APP_NAME'] ?? 'Shoe Store');
+            $mail->Body    = "
+                <p>Hello {$name},</p>
+                <p>Thank you for registering with " . htmlspecialchars($_ENV['APP_NAME'] ?? 'Shoe Store') . ".</p>
+                <p>We are excited to have you on board!</p>
+                <p>Thanks,<br>The " . htmlspecialchars($_ENV['APP_NAME'] ?? 'Shoe Store') . " Team</p>
+            ";
+            $mail->AltBody = "
+                Hello {$name},
+
+                Thank you for registering with " . htmlspecialchars($_ENV['APP_NAME'] ?? 'Shoe Store') . ".
+
+                We are excited to have you on board!
+
+                Thanks,
+                The " . htmlspecialchars($_ENV['APP_NAME'] ?? 'Shoe Store') . " Team
+            ";
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            // Log the error in a real application
+            error_log("Mailer Error (Registration Confirmation): {$mail->ErrorInfo}");
+            return false;
+        }
+    }
+}
+
+if (!function_exists('sendOrderConfirmationEmail')) {
+    /**
+     * Sends an order confirmation email.
+     *
+     * @param string $email The recipient's email address.
+     * @param string $name The recipient's name.
+     * @param string $orderId The order ID.
+     * @param array $orderDetails The order details.
+     * @return bool True if email was sent successfully, false otherwise.
+     */
+    function sendOrderConfirmationEmail(string $email, string $name, string $orderId, array $orderDetails): bool
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Server settings
+            $mail->SMTPDebug = SMTP::DEBUG_OFF; // Disable verbose debug output
+            $mail->isSMTP();
+            $mail->Host       = $_ENV['MAIL_HOST'] ?? 'smtp.example.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $_ENV['MAIL_USERNAME'] ?? 'user@example.com';
+            $mail->Password   = $_ENV['MAIL_PASSWORD'] ?? 'secret';
+            $mail->SMTPSecure = $_ENV['MAIL_ENCRYPTION'] === 'tls' ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = (int)($_ENV['MAIL_PORT'] ?? 587);
+
+            // Recipients
+            $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@example.com', $_ENV['MAIL_FROM_NAME'] ?? 'Shoe Store');
+            $mail->addAddress($email, $name);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Order Confirmation - ' . ($_ENV['APP_NAME'] ?? 'Shoe Store');
+            $mail->Body    = "
+                <p>Hello {$name},</p>
+                <p>Thank you for your order with " . htmlspecialchars($_ENV['APP_NAME'] ?? 'Shoe Store') . ".</p>
+                <p>Your order ID is: <strong>{$orderId}</strong></p>
+                <p>Order Details:</p>
+                <ul>
+                    " . implode('', array_map(fn($item) => "<li>{$item}</li>", $orderDetails)) . "
+                </ul>
+                <p>Thanks,<br>The " . htmlspecialchars($_ENV['APP_NAME'] ?? 'Shoe Store') . " Team</p>
+            ";
+            $mail->AltBody = "
+                Hello {$name},
+
+                Thank you for your order with " . htmlspecialchars($_ENV['APP_NAME'] ?? 'Shoe Store') . ".
+
+                Your order ID is: {$orderId}
+
+                Order Details:
+                " . implode("\n", $orderDetails) . "
+
+                Thanks,
+                The " . htmlspecialchars($_ENV['APP_NAME'] ?? 'Shoe Store') . " Team
+            ";
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            // Log the error in a real application
+            error_log("Mailer Error (Order Confirmation): {$mail->ErrorInfo}");
             return false;
         }
     }

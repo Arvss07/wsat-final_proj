@@ -85,7 +85,7 @@ $stmt_otp->close();
 // --- Update Password ---
 $hashed_password = hashPassword($new_password);
 
-$stmt_update_pass = $conn->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+$stmt_update_pass = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
 $stmt_update_pass->bind_param("ss", $hashed_password, $user_id);
 
 if (!$stmt_update_pass->execute()) {

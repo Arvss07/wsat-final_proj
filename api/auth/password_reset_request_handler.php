@@ -33,6 +33,49 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $user_id = $user['id'];
         $user_name = $user['name'];
 
+        // Check for recent password reset requests for this email
+        $stmt_check_recent = $conn->prepare("SELECT created_at FROM password_resets WHERE email = ? ORDER BY created_at DESC LIMIT 1");
+        $stmt_check_recent->bind_param("s", $email);
+        $stmt_check_recent->execute();
+        $recent_result = $stmt_check_recent->get_result();
+
+        if ($recent_result->num_rows === 1) {
+            $last_request_data = $recent_result->fetch_assoc();
+            $last_request_timestamp_str = $last_request_data['created_at'];
+            $last_request_time_unix = strtotime($last_request_timestamp_str);
+            $current_time_unix = time();
+            $rate_limit_duration_seconds = 120; // 2 minutes
+
+            if ($last_request_time_unix === false) {
+                error_log("Rate Limiter: Failed to parse 'created_at' timestamp ('" . $last_request_timestamp_str . "') for email: " . $email . ". Allowing request for now, but this should be investigated.");
+                // Allowing the request to proceed if timestamp is unparseable, to avoid undue user blocking.
+                // Depending on security policy, could also block with a generic error.
+            } else {
+                $seconds_to_wait = 0;
+                if ($last_request_time_unix > $current_time_unix) {
+                    // Timestamp is in the future. This is an anomaly.
+                    // User should wait the standard rate_limit_duration_seconds from the current time.
+                    $seconds_to_wait = $rate_limit_duration_seconds;
+                    error_log("Rate Limiter: Future 'created_at' timestamp ('" . $last_request_timestamp_str . "') detected for email: " . $email . ". Current time: " . date('Y-m-d H:i:s', $current_time_unix) . ". Applying standard " . $rate_limit_duration_seconds . "s wait.");
+                } else {
+                    $seconds_since_last = $current_time_unix - $last_request_time_unix;
+                    if ($seconds_since_last < $rate_limit_duration_seconds) {
+                        $seconds_to_wait = $rate_limit_duration_seconds - $seconds_since_last;
+                    }
+                }
+
+                if ($seconds_to_wait > 0) {
+                    // Ensure at least 1 second for ceil to produce a minimum of 1 minute in the message,
+                    // and to prevent messages like "wait 0 minutes".
+                    $display_wait_seconds = max(1, $seconds_to_wait); // Ensure at least 1 second
+                    $minutes_to_wait_display = ceil($display_wait_seconds / 60);
+                    header("Location: " . $redirect_page_url . "&error=Too+many+requests.+Please+wait+" . $minutes_to_wait_display . "+minute(s)+before+requesting+another+OTP.");
+                    exit;
+                }
+            }
+        }
+        $stmt_check_recent->close();
+
         // Generate a 6-digit OTP
         try {
             $otp = str_pad((string)random_int(0, 999999), 6, '0', STR_PAD_LEFT);
