@@ -27,7 +27,7 @@ if (!$product_id) {
 if (isset($conn) && !$conn->connect_error) {
     try {
         // Fetch product core details
-        $stmt_product = $conn->prepare("SELECT p.*, s.username as seller_username FROM products p JOIN users s ON p.seller_id = s.id WHERE p.id = ? AND p.seller_id = ?");
+        $stmt_product = $conn->prepare("SELECT p.*, s.name as seller_username FROM products p JOIN users s ON p.seller_id = s.id WHERE p.id = ? AND p.seller_id = ?");
         if (!$stmt_product) throw new Exception("Prepare failed (product): " . $conn->error);
         $stmt_product->bind_param("ss", $product_id, $_SESSION['user_id']);
         $stmt_product->execute();

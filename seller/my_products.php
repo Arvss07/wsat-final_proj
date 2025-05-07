@@ -46,11 +46,35 @@ try {
     $stmt->close();
 } catch (Exception $e) {
     error_log("Database error fetching seller products (MySQLi): " . $e->getMessage());
+    // It might be good to set an error message to display to the user here too
+    // $_SESSION['error_message'] = "Could not retrieve products at this time."; 
+}
+
+// Display and clear session messages
+$success_message = $_SESSION['success_message'] ?? null;
+$error_message = $_SESSION['error_message'] ?? null;
+
+if ($success_message) {
+    unset($_SESSION['success_message']);
+}
+if ($error_message) {
+    unset($_SESSION['error_message']);
 }
 
 ?>
 
 <div class="container mt-4">
+    <?php if ($success_message): ?>
+        <div class="alert alert-success" role="alert">
+            <?php echo htmlspecialchars($success_message); ?>
+        </div>
+    <?php endif; ?>
+    <?php if ($error_message): ?>
+        <div class="alert alert-danger" role="alert">
+            <?php echo htmlspecialchars($error_message); ?>
+        </div>
+    <?php endif; ?>
+
     <div class="row mb-3">
         <div class="col">
             <h2>My Products Dashboard</h2>

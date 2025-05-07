@@ -38,7 +38,7 @@ $protected_pages = ['profile', 'cart', 'checkout', 'orders', 'logout'];
 
 // Define pages specific to roles
 $admin_pages = ['admin/dashboard', 'admin/users', 'admin/products', 'admin/settings'];
-$seller_pages = ['seller/dashboard', 'seller/my_products', 'seller/add_product', 'seller/edit_product', 'seller/manage_orders', 'seller/orders', 'seller/settings']; // Added seller/manage_orders
+$seller_pages = ['seller/dashboard', 'seller/my_products', 'seller/add_product', 'seller/edit_product', 'seller/manage_orders', 'seller/orders', 'seller/settings', 'seller/view_product', 'seller/delete_product']; // Added seller/view_product and seller/delete_product
 
 $page_path = '';
 $page_title = ucfirst(str_replace("_", " ", $page)); // Default page title
@@ -99,15 +99,6 @@ switch ($page) {
         header("Location: index.php?page=login&message=You have been logged out.");
         exit;
         break;
-    // Add more public pages like product listings, single product view, etc.
-    // case 'products':
-    //     $page_path = __DIR__ . '/pages/products.php';
-    //     $page_title = 'All Products';
-    //     break;
-    // case 'product': // Example: index.php?page=product&id=some-uuid
-    //     $page_path = __DIR__ . '/pages/product_detail.php';
-    //     $page_title = 'Product Details'; // Title can be set dynamically in the page file
-    //     break;
 
     // Protected Pages (Shopper, Seller, Admin)
     case 'profile':
@@ -159,6 +150,14 @@ switch ($page) {
     case 'seller/manage_orders': // Added for managing shopper orders
         $page_path = __DIR__ . '/seller/manage_orders.php';
         $page_title = 'Manage Orders';
+        break;
+    case 'seller/view_product':
+        $page_path = __DIR__ . '/seller/view_product.php';
+        $page_title = 'View Product';
+        break;
+    case 'seller/delete_product':
+        $page_path = __DIR__ . '/seller/delete_product.php';
+        $page_title = 'Delete Product'; // Title might not be shown as it usually redirects
         break;
     // ... other seller pages
 
