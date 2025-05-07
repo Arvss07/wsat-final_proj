@@ -58,15 +58,17 @@ if (!function_exists('asset')) {
                         <?php $user_role = $_SESSION['role'] ?? null; ?>
 
                         <?php if ($user_role === 'Admin'): ?>
+                            <li class="nav-item"><a class="nav-link <?php if ($current_page === 'admin/dashboard') echo 'active'; ?>" href="index.php?page=admin/dashboard">Dashboard</a></li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'logout') echo 'active'; ?>" href="index.php?page=logout">Logout</a></li>
                         <?php elseif ($user_role === 'Seller'): ?>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'seller/my_products') echo 'active'; ?>" href="index.php?page=seller/my_products">My Products</a></li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'seller/manage_orders') echo 'active'; ?>" href="index.php?page=seller/manage_orders">Manage Orders</a></li>
-                            <li class="nav-item"><a class="nav-link <?php if ($current_page === 'profile') echo 'active'; ?>" href="index.php?page=profile">My Account</a></li>
+                            <li class="nav-item"><a class="nav-link <?php if ($current_page === 'account') echo 'active'; ?>" href="index.php?page=account">My Account</a></li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'logout') echo 'active'; ?>" href="index.php?page=logout">Logout</a></li>
                         <?php else: // Shopper or other roles 
                         ?>
-                            <li class="nav-item"><a class="nav-link <?php if ($current_page === 'profile') echo 'active'; ?>" href="index.php?page=profile">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link <?php if ($current_page === 'home') echo 'active'; ?>" href="index.php?page=home">Home</a></li>
+                            <li class="nav-item"><a class="nav-link <?php if ($current_page === 'account') echo 'active'; ?>" href="index.php?page=account">My Account</a></li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'cart') echo 'active'; ?>" href="index.php?page=cart">Cart</a></li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'logout') echo 'active'; ?>" href="index.php?page=logout">Logout</a></li>
                         <?php endif; ?>

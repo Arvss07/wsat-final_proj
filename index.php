@@ -34,7 +34,7 @@ $page = $_GET['page'] ?? 'home'; // Default page is 'home'
 $public_pages = ['home', 'login', 'register', 'product', 'products', 'contact', 'about', 'password_reset_request', 'password_reset_form'];
 
 // Define pages that require login
-$protected_pages = ['profile', 'cart', 'checkout', 'orders', 'logout'];
+$protected_pages = ['cart', 'checkout', 'orders', 'logout', 'account'];
 
 // Define pages specific to roles
 $admin_pages = ['admin/dashboard', 'admin/users', 'admin/products', 'admin/settings'];
@@ -101,9 +101,9 @@ switch ($page) {
         break;
 
     // Protected Pages (Shopper, Seller, Admin)
-    case 'profile':
-        $page_path = __DIR__ . '/pages/profile.php';
-        $page_title = 'My Profile';
+    case 'account': // Added for the new account page
+        $page_path = __DIR__ . '/pages/account.php';
+        $page_title = 'My Account';
         break;
     case 'cart':
         $page_path = __DIR__ . '/pages/cart.php';
