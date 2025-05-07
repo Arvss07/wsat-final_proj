@@ -333,6 +333,7 @@ if ($action === 'edit' && $user_id_to_edit) {
                     <table class="table table-bordered table-striped" id="usersDataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
+                                <th>Profile Picture</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Role</th>
@@ -342,7 +343,7 @@ if ($action === 'edit' && $user_id_to_edit) {
                         </thead>
                         <tbody>
                             <?php
-                            $sql_all_users = "SELECT u.id, u.name, u.email, r.name as role_name, u.is_blocked 
+                            $sql_all_users = "SELECT u.id, u.name, u.email, u.profile_picture_path, r.name as role_name, u.is_blocked 
                                             FROM users u 
                                             JOIN roles r ON u.role_id = r.id 
                                             ORDER BY u.name ASC";
@@ -350,6 +351,13 @@ if ($action === 'edit' && $user_id_to_edit) {
                             if ($result_all_users && $result_all_users->num_rows > 0) {
                                 while ($user = $result_all_users->fetch_assoc()) {
                                     echo "<tr>";
+                                    echo "<td>";
+                                    if (!empty($user['profile_picture_path']) && file_exists(__DIR__ . '/../' . $user['profile_picture_path'])) {
+                                        echo "<img src='" . htmlspecialchars($user['profile_picture_path']) . "' alt='" . htmlspecialchars($user['name']) . "' style='width: 50px; height: 50px; object-fit: cover; border-radius: 50%;'>";
+                                    } else {
+                                        echo "<img src='assets/img/default_avatar.png' alt='Default Avatar' style='width: 50px; height: 50px; object-fit: cover; border-radius: 50%;'>";
+                                    }
+                                    echo "</td>";
                                     echo "<td>" . htmlspecialchars($user['name']) . "</td>";
                                     echo "<td>" . htmlspecialchars($user['email']) . "</td>";
                                     echo "<td>" . htmlspecialchars($user['role_name']) . "</td>";
@@ -381,7 +389,7 @@ if ($action === 'edit' && $user_id_to_edit) {
                                     echo "</tr>";
                                 }
                             } else {
-                                echo "<tr><td colspan='5'>No users found.</td></tr>";
+                                echo "<tr><td colspan='6'>No users found.</td></tr>";
                             }
                             ?>
                         </tbody>
