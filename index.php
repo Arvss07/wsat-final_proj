@@ -25,7 +25,7 @@ require_once __DIR__ . '/config/database.php';
 
 // Utility functions (e.g., for password hashing, UUID generation if needed here)
 require_once __DIR__ . '/utils/hash.php';
-// require_once __DIR__ . '/utils/uuid.php'; // If you create a UUID utility
+require_once __DIR__ . '/utils/uuid.php';
 
 // --- Routing Logic ---
 $page = $_GET['page'] ?? 'home'; // Default page is 'home'
