@@ -1,0 +1,89 @@
+/* General Body Styles */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa; /* Light gray background */
+  color: #333; /* Default text color */
+  line-height: 1.6;
+}
+
+/* Theme Variables - Example for a default theme */
+:root {
+  --primary-color: #007bff; /* Bootstrap primary blue */
+  --secondary-color: #6c757d; /* Bootstrap secondary gray */
+  --accent-color: #17a2b8; /* Bootstrap info cyan */
+  --background-color: #ffffff; /* White background for content areas */
+  --text-color: #212529; /* Bootstrap default text color */
+  --heading-font: "Arial", sans-serif;
+  --body-font: "Georgia", serif;
+  --card-border-color: #dee2e6;
+  --card-box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Navbar Customization */
+.navbar {
+  box-shadow: var(--card-box-shadow);
+}
+
+.navbar-brand {
+  font-weight: bold;
+  color: var(--primary-color) !important;
+}
+
+/* Card Customization */
+.card {
+  border: 1px solid var(--card-border-color);
+  box-shadow: var(--card-box-shadow);
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+}
+
+/* Button Styling */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid #e7e7e7;
+}
+
+/* Utility Classes */
+.mt-5 {
+  margin-top: 3rem !important;
+}
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--heading-font);
+  color: var(--primary-color);
+}
+
+/* Basic container styling from header/footer */
+.container {
+  /* max-width: 960px; /* You might adjust this based on your design */
+}
+
+/* Add more specific styles as needed */
