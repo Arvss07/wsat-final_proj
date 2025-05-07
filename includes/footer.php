@@ -1,3 +1,7 @@
+<?php if ($is_admin_page && isset($_SESSION['role']) && $_SESSION['role'] === 'Admin') : ?>
+    </div> <!-- close col-md-9 -->
+    </div> <!-- close row -->
+<?php endif; ?>
 </div> <!-- Closing .container from header.php -->
 
 <footer class="mt-5 py-4 bg-light text-center">

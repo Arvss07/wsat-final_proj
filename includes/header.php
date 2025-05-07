@@ -72,4 +72,17 @@ if (!function_exists('asset')) {
     </nav>
 
     <div class="container">
-        <!-- Page content will be loaded here -->
+        <?php
+        // Check if the current page is an admin page
+        $is_admin_page = isset($_GET['page']) && strpos($_GET['page'], 'admin/') === 0;
+        if ($is_admin_page && isset($_SESSION['role']) && $_SESSION['role'] === 'Admin') :
+        ?>
+            <div class="row">
+                <div class="col-md-3">
+                    <?php include_once __DIR__ . '/../admin/includes/admin_sidebar.php'; ?>
+                </div>
+                <div class="col-md-9">
+                    <!-- Page content will be loaded here for admin pages -->
+                <?php else : ?>
+                    <!-- Page content will be loaded here for non-admin pages -->
+                <?php endif; ?>
