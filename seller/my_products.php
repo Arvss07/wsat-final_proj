@@ -1,10 +1,12 @@
 <?php
 // Ensure user is logged in and is a seller
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'Seller') {
-    if (!isset($_SESSION['role_name']) || $_SESSION['role_name'] !== 'Seller') {
-        echo "Unauthorized access.";
-        exit();
-    }
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.php?page=login&message=Please log in to view your products.");
+    exit();
+}
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Seller') {
+    header("Location: index.php?page=unauthorized&message=You do not have permission to access the products page. Seller access is required.");
+    exit();
 }
 
 $seller_id = $_SESSION['user_id'];
@@ -54,7 +56,7 @@ try {
             <h2>My Products Dashboard</h2>
         </div>
         <div class="col text-end">
-            <a href="add_product.php" class="btn btn-success">
+            <a href="index.php?page=seller/add_product" class="btn btn-success">
                 <i class="fas fa-plus"></i> Add New Product
             </a>
         </div>
@@ -92,9 +94,9 @@ try {
         </div>
         <div class="card-body">
             <?php if (empty($products)): ?>
-                <p class="text-center">You have not added any products yet. <a href="add_product.php">Add your first product!</a></p>
+                <p class="text-center">You have not added any products yet. <a href="index.php?page=seller/add_product">Add your first product!</a></p>
             <?php else: ?>
-                <table class="table table-hover">
+                <table id="productTable" class="table table-hover">
                     <thead>
                         <tr>
                             <th>Image</th>
@@ -111,11 +113,12 @@ try {
                                     <img src="<?php echo htmlspecialchars($product['primary_image_path'] ?? '../assets/img/placeholder.png'); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="width: 50px; height: 50px; object-fit: cover;">
                                 </td>
                                 <td><?php echo htmlspecialchars($product['name']); ?></td>
-                                <td>$<?php echo htmlspecialchars(number_format($product['price'], 2)); ?></td>
+                                <td>₱<?php echo htmlspecialchars(number_format($product['price'], 2)); ?></td>
                                 <td><?php echo htmlspecialchars($product['stock_quantity']); ?></td>
                                 <td>
-                                    <a href="edit_product.php?id=<?php echo htmlspecialchars($product['id']); ?>" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
-                                    <a href="delete_product.php?id=<?php echo htmlspecialchars($product['id']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product?');"><i class="fas fa-trash"></i> Delete</a>
+                                    <a href="index.php?page=seller/view_product&id=<?php echo htmlspecialchars($product['id']); ?>" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> View</a>
+                                    <a href="index.php?page=seller/edit_product&id=<?php echo htmlspecialchars($product['id']); ?>" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i> Edit</a>
+                                    <a href="index.php?page=seller/delete_product&id=<?php echo htmlspecialchars($product['id']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product?');"><i class="fas fa-trash"></i> Delete</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
