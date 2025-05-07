@@ -90,7 +90,6 @@ CREATE TABLE `product_categories` (
 CREATE TABLE `addresses` (
   `id` VARCHAR(36) PRIMARY KEY,
   `user_id` VARCHAR(36) NOT NULL,
-  `address_type` ENUM('shipping', 'billing') NOT NULL,
   `street` VARCHAR(255) NOT NULL,
   `city` VARCHAR(100) NOT NULL,
   `province` VARCHAR(100) NOT NULL,
@@ -113,10 +112,6 @@ CREATE TABLE `orders` (
   `shipping_city` VARCHAR(100) NOT NULL,
   `shipping_postal_code` VARCHAR(20) NOT NULL,
   `shipping_country` VARCHAR(100) NOT NULL,
-  `billing_street` VARCHAR(255) NOT NULL,
-  `billing_city` VARCHAR(100) NOT NULL,
-  `billing_postal_code` VARCHAR(20) NOT NULL,
-  `billing_country` VARCHAR(100) NOT NULL,
   `payment_method` ENUM('Cash on Delivery', 'E-Payment') NOT NULL,
   `payment_status` ENUM('Pending', 'Paid', 'Failed') NOT NULL DEFAULT 'Pending',
   `epayment_type` VARCHAR(50) NULL, -- e.g., 'GCash', 'Maya', NULL if not E-Payment
