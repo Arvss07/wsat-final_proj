@@ -15,11 +15,18 @@ if (file_exists(__DIR__ . '/../.env')) {
 }
 
 // Database credentials from environment variables
-$db_host = $_ENV['DB_HOST'] ?? 'localhost';
-$db_user = $_ENV['DB_USERNAME'] ?? 'root';
-$db_pass = $_ENV['DB_PASSWORD'] ?? '';
-$db_name = $_ENV['DB_DATABASE'] ?? 'wsat_finalP';
-$db_port = $_ENV['DB_PORT'] ?? 3306;
+// $db_host = $_ENV['DB_HOST'] ?? 'localhost';
+// $db_user = $_ENV['DB_USERNAME'] ?? 'root';
+// $db_pass = $_ENV['DB_PASSWORD'] ?? '';
+// $db_name = $_ENV['DB_DATABASE'] ?? 'wsat_finalP';
+// $db_port = $_ENV['DB_PORT'] ?? 3306;
+
+// TEMPORARY DATABASE CREDENTIALS (AIVEN)
+$db_host = $_ENV['DB_AIVEN_HOST'];
+$db_user = $_ENV['DB_AIVEN_USERNAME'];
+$db_pass = $_ENV['DB_AIVEN_PASSWORD'];
+$db_name = $_ENV['DB_AIVEN_DATABASE'];
+$db_port = $_ENV['DB_AIVEN_PORT'];
 
 // Create a new MySQLi connection
 $conn = new MySQLi($db_host, $db_user, $db_pass, $db_name, (int)$db_port);
