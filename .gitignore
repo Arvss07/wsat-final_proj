@@ -16,3 +16,6 @@ Thumbs.db
 
 # IDE configuration
 /.vscode/
+
+# ignore ca.pem
+ca.pem
