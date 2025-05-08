@@ -33,7 +33,4 @@ $app_url = $_ENV['APP_URL'] ?? 'http://localhost/wsat-final_proj';
     <a href="<?php echo $app_url . '/index.php?page=admin/settings'; ?>" class="list-group-item list-group-item-action <?php echo ($current_page === 'admin/settings') ? 'active' : ''; ?>">
         <i class="bi bi-gear"></i> Settings
     </a>
-    <a href="<?php echo $app_url . '/index.php?page=home'; ?>" class="list-group-item list-group-item-action">
-        <i class="bi bi-arrow-left-square"></i> Back to Site
-    </a>
 </div>

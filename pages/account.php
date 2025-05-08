@@ -164,10 +164,6 @@ if (isset($_GET['error'])) {
                             <div id="addressErrorMessage" class="alert alert-danger" style="display: none;"></div>
 
                             <?php
-                            // Determine user role to display appropriate address form
-                            // This requires fetching the role_id or role_name for the current user
-                            // For now, we'll assume $_SESSION['role'] is set upon login.
-                            // You might need to adjust this based on your actual session variable.
                             $user_role = $_SESSION['role'] ?? 'Shopper'; // Default to Shopper if not set
 
                             if ($user_role === 'Seller'):
@@ -177,13 +173,19 @@ if (isset($_GET['error'])) {
                                 <form id="sellerAddressForm">
                                     <input type="hidden" name="action" value="update_seller_address">
                                     <input type="hidden" name="address_id" id="seller_address_id" value="">
-                                    <div class="mb-3">
-                                        <label for="seller_street" class="form-label">Street</label>
-                                        <input type="text" class="form-control" id="seller_street" name="street" required>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="seller_street" class="form-label">Street</label>
+                                            <input type="text" class="form-control" id="seller_street" name="street" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="seller_barangay" class="form-label">Barangay</label>
+                                            <input type="text" class="form-control" id="seller_barangay" name="barangay" required>
+                                        </div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-md-6">
-                                            <label for="seller_city" class="form-label">City</label>
+                                            <label for="seller_city" class="form-label">City/Municipality</label>
                                             <input type="text" class="form-control" id="seller_city" name="city" required>
                                         </div>
                                         <div class="col-md-6">
@@ -193,12 +195,12 @@ if (isset($_GET['error'])) {
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-md-6">
-                                            <label for="seller_postal_code" class="form-label">Postal Code</label>
-                                            <input type="text" class="form-control" id="seller_postal_code" name="postal_code" required>
-                                        </div>
-                                        <div class="col-md-6">
                                             <label for="seller_country" class="form-label">Country</label>
                                             <input type="text" class="form-control" id="seller_country" name="country" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="seller_postal_code" class="form-label">Postal Code</label>
+                                            <input type="text" class="form-control" id="seller_postal_code" name="postal_code" required>
                                         </div>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Save Business Address</button>
@@ -225,13 +227,19 @@ if (isset($_GET['error'])) {
                                                     <input type="hidden" name="action" id="shopper_address_action" value="add_address">
                                                     <input type="hidden" name="address_id" id="shopper_address_id" value="">
 
-                                                    <div class="mb-3">
-                                                        <label for="shopper_street" class="form-label">Street</label>
-                                                        <input type="text" class="form-control" id="shopper_street" name="street" required>
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-6">
+                                                            <label for="shopper_street" class="form-label">Street</label>
+                                                            <input type="text" class="form-control" id="shopper_street" name="street" required>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="shopper_barangay" class="form-label">Barangay</label>
+                                                            <input type="text" class="form-control" id="shopper_barangay" name="barangay" required>
+                                                        </div>
                                                     </div>
                                                     <div class="row mb-3">
                                                         <div class="col-md-6">
-                                                            <label for="shopper_city" class="form-label">City</label>
+                                                            <label for="shopper_city" class="form-label">City/Municipality</label>
                                                             <input type="text" class="form-control" id="shopper_city" name="city" required>
                                                         </div>
                                                         <div class="col-md-6">
