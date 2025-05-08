@@ -16,11 +16,6 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['Seller', 'Adm
     exit;
 }
 
-// Database Connection (assuming $conn is established in database.php)
-// The main index.php includes database.php, but standalone access might need it directly.
-// For consistency with how index.php loads pages, $conn should already be available.
-// If not, uncomment the line below:
-// require_once __DIR__ . '/../config/database.php';
 global $conn; // Use the global connection established by index.php
 
 if (!$conn) {
@@ -224,7 +219,6 @@ function getStatusBadgeClass($status)
         newStatusSelect.value = currentStatus; // Set current status as selected initially
 
         // Trigger change event to show/hide fields if initial status is 'Shipped'
-        // (though typically one wouldn't re-select 'Shipped' if it already is, but good for consistency)
         var event = new Event('change');
         newStatusSelect.dispatchEvent(event);
 
