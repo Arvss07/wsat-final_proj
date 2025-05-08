@@ -269,11 +269,11 @@ if ($action === 'edit' && $user_id_to_edit) {
 
             <div class="mb-3">
                 <label for="name" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($user_to_edit_data['name'] ?? ''); ?>" required>
+                <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($user_to_edit_data['name'] ?? ''); ?>" required <?php if ($action === 'edit') echo 'readonly'; ?>>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($user_to_edit_data['email'] ?? ''); ?>" required>
+                <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($user_to_edit_data['email'] ?? ''); ?>" required <?php if ($action === 'edit') echo 'readonly'; ?>>
             </div>
 
             <?php if ($action === 'edit' && isset($user_to_edit_data['created_at'])): ?>
