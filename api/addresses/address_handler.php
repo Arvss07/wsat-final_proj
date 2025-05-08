@@ -39,6 +39,7 @@ function validate_address_fields($post_data)
 {
     $errors = [];
     if (empty($post_data['street'])) $errors[] = "Street is required.";
+    if (empty($post_data['barangay'])) $errors[] = "Barangay is required.";
     if (empty($post_data['city'])) $errors[] = "City is required.";
     if (empty($post_data['province'])) $errors[] = "Province is required.";
     if (empty($post_data['postal_code'])) $errors[] = "Postal code is required.";
@@ -71,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $street = sanitize_input($_POST['street']);
                 $city = sanitize_input($_POST['city']);
+                $barangay = sanitize_input($_POST['barangay']);
                 $province = sanitize_input($_POST['province']);
                 $postal_code = sanitize_input($_POST['postal_code']);
                 $country = sanitize_input($_POST['country']);
@@ -104,8 +106,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     $new_address_id = generateUuidV4();
-                    $stmt = $conn->prepare("INSERT INTO addresses (id, user_id, street, city, province, postal_code, country, is_default) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                    $stmt->bind_param("sssssssi", $new_address_id, $user_id, $street, $city, $province, $postal_code, $country, $is_default);
+                    $stmt = $conn->prepare("INSERT INTO addresses (id, user_id, street, barangay, city, province, country, postal_code, is_default) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    $stmt->bind_param("ssssssssi", $new_address_id, $user_id, $street, $barangay, $city, $province, $country, $postal_code, $is_default);
 
                     if ($stmt->execute()) {
                         if (!$is_seller && $is_default) {
@@ -115,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $stmt_unset->execute();
                             $stmt_unset->close();
                         }
-                        $response = ['success' => true, 'message' => 'Address added successfully.', 'address' => ['id' => $new_address_id, 'street' => $street, 'city' => $city, 'province' => $province, 'postal_code' => $postal_code, 'country' => $country, 'is_default' => $is_default]];
+                        $response = ['success' => true, 'message' => 'Address added successfully.', 'address' => ['id' => $new_address_id, 'street' => $street, 'barangay' => $barangay, 'city' => $city, 'province' => $province, 'country' => $country, 'postal_code' => $postal_code, 'is_default' => $is_default]];
                     } else {
                         $response['message'] = 'Failed to add address. Error: ' . $stmt->error;
                         http_response_code(500);
@@ -141,8 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt_verify->close();
                     }
 
-                    $stmt = $conn->prepare("UPDATE addresses SET street = ?, city = ?, province = ?, postal_code = ?, country = ?, is_default = ? WHERE id = ? AND user_id = ?");
-                    $stmt->bind_param("sssssiss", $street, $city, $province, $postal_code, $country, $is_default, $address_id, $user_id);
+                    $stmt = $conn->prepare("UPDATE addresses SET street = ?, barangay = ?, city = ?, province = ?, country = ?, postal_code = ?, is_default = ? WHERE id = ? AND user_id = ?");
+                    $stmt->bind_param("ssssssiss", $street, $barangay, $city, $province, $country, $postal_code, $is_default, $address_id, $user_id);
 
                     if ($stmt->execute()) {
                         if (!$is_seller && $is_default) {
@@ -152,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $stmt_unset->execute();
                             $stmt_unset->close();
                         }
-                        $response = ['success' => true, 'message' => 'Address updated successfully.', 'address' => ['id' => $address_id, 'street' => $street, 'city' => $city, 'province' => $province, 'postal_code' => $postal_code, 'country' => $country, 'is_default' => $is_default]];
+                        $response = ['success' => true, 'message' => 'Address updated successfully.', 'address' => ['id' => $address_id, 'street' => $street, 'barangay' => $barangay, 'city' => $city, 'province' => $province, 'country' => $country, 'postal_code' => $postal_code, 'is_default' => $is_default]];
                     } else {
                         $response['message'] = 'Failed to update address. Error: ' . $stmt->error;
                         http_response_code(500);
@@ -254,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         switch ($action) {
             case 'get_addresses':
-                $stmt = $conn->prepare("SELECT id, street, city, province, postal_code, country, is_default FROM addresses WHERE user_id = ? ORDER BY is_default DESC, created_at DESC");
+                $stmt = $conn->prepare("SELECT id, street, barangay, city, province, postal_code, country, is_default FROM addresses WHERE user_id = ? ORDER BY is_default DESC, created_at DESC");
                 $stmt->bind_param("s", $user_id);
                 $stmt->execute();
                 $result = $stmt->get_result();
@@ -278,7 +280,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                 }
                 $address_id_to_fetch = sanitize_input($_GET['id']);
-                $stmt = $conn->prepare("SELECT id, street, city, province, postal_code, country, is_default FROM addresses WHERE id = ? AND user_id = ?");
+                $stmt = $conn->prepare("SELECT id, street, barangay, city, province, postal_code, country, is_default FROM addresses WHERE id = ? AND user_id = ?");
                 $stmt->bind_param("ss", $address_id_to_fetch, $user_id);
                 $stmt->execute();
                 $result = $stmt->get_result();
