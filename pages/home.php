@@ -1,7 +1,21 @@
 <?php
 // pages/home.php
 
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/product_functions.php';
+
 $app_url = rtrim($_ENV['APP_URL'] ?? 'http://localhost/wsat-final_proj', '/') . '/';
+
+$products_per_page = 12;
+
+// Determine current page for new arrivals (default to 1)
+$current_page_new_arrivals = isset($_GET['p_na']) ? max(1, (int)$_GET['p_na']) : 1;
+$offset_new_arrivals = ($current_page_new_arrivals - 1) * $products_per_page;
+
+// Fetch new arrivals and total count
+$new_arrival_products_data = get_new_arrival_products($conn, $products_per_page, $offset_new_arrivals);
+$total_products_new_arrivals = count_new_arrival_products($conn);
+$total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_arrivals / $products_per_page) : 1;
 
 ?>
 
