@@ -67,7 +67,7 @@ foreach ($cart_items as $item) {
         </div>
         <div class="d-flex justify-content-end align-items-center mt-4">
             <h4 class="me-4">Total: <span id="cartTotal">₱<?php echo number_format($total, 2); ?></span></h4>
-            <button id="checkoutBtn" class="btn btn-success btn-lg">Checkout</button>
+            <button id="checkoutBtn" class="btn btn-success btn-lg" onclick="window.location.href='index.php?page=checkout';">Checkout</button>
         </div>
         <div id="cartMsg" class="mt-3"></div>
     <?php endif; ?>

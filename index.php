@@ -108,6 +108,14 @@ switch ($page) {
         $page_path = __DIR__ . '/pages/cart.php';
         $page_title = 'Shopping Cart';
         break;
+    case 'orders':
+        $page_path = __DIR__ . '/pages/orders.php';
+        $page_title = 'My Orders';
+        break;
+    case 'checkout':
+        $page_path = __DIR__ . '/pages/checkout.php';
+        $page_title = 'Checkout';
+        break;
     // ... other protected pages
 
     // Admin Pages

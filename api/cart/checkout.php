@@ -10,6 +10,26 @@ if (!isset($_SESSION['user_id'])) {
 }
 $user_id = $_SESSION['user_id'];
 
+$address_id = $_POST['address_id'] ?? '';
+$payment_method = $_POST['payment_method'] ?? 'Cash on Delivery';
+$epayment_type = $_POST['epayment_type'] ?? null;
+$epayment_reference_id = $_POST['epayment_reference_id'] ?? null;
+
+// Fetch address
+$address = null;
+if ($address_id) {
+    $stmt = $conn->prepare('SELECT * FROM addresses WHERE id = ? AND user_id = ?');
+    $stmt->bind_param('ss', $address_id, $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $address = $res->fetch_assoc();
+    $stmt->close();
+}
+if (!$address) {
+    echo json_encode(['success' => false, 'message' => 'Invalid address.']);
+    exit;
+}
+
 // Fetch cart items
 $sql = "SELECT ci.id as cart_id, ci.quantity, p.id as product_id, p.price, p.stock_quantity
         FROM cart_items ci
@@ -41,9 +61,9 @@ $total_amount = 0;
 foreach ($cart_items as $item) {
     $total_amount += $item['price'] * $item['quantity'];
 }
-$sql = "INSERT INTO orders (id, user_id, total_amount, payment_method, payment_status, shipping_street, shipping_city, shipping_postal_code, shipping_country, status) VALUES (?, ?, ?, 'Cash on Delivery', 'Pending', '', '', '', '', 'Pending')";
+$sql = "INSERT INTO orders (id, user_id, total_amount, payment_method, payment_status, shipping_street, shipping_city, shipping_postal_code, shipping_country, status, epayment_type, epayment_reference_id) VALUES (?, ?, ?, ?, 'Pending', ?, ?, ?, ?, 'Pending', ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param('ssd', $order_id, $user_id, $total_amount);
+$stmt->bind_param('ssdsssssss', $order_id, $user_id, $total_amount, $payment_method, $address['street'], $address['city'], $address['postal_code'], $address['country'], $epayment_type, $epayment_reference_id);
 $stmt->execute();
 $stmt->close();
 

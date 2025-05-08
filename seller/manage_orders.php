@@ -140,7 +140,6 @@ if ($stmt) {
                         <label for="new_status" class="form-label">New Status</label>
                         <select name="new_status" id="new_status" class="form-select" required>
                             <option value="Pending">Pending</option>
-                            <option value="Awaiting Payment">Awaiting Payment</option>
                             <option value="Processing">Processing</option>
                             <option value="Shipped">Shipped</option>
                             <option value="Delivered">Delivered</option>

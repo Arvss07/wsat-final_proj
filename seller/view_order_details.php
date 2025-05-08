@@ -159,13 +159,6 @@ function getStatusBadgeClassDetails($status)
                 <?php echo htmlspecialchars($order_details['shipping_city']); ?>, <?php echo htmlspecialchars($order_details['shipping_postal_code']); ?><br>
                 <?php echo htmlspecialchars($order_details['shipping_country']); ?>
             </p>
-            <hr>
-            <h5>Billing Address</h5>
-            <p>
-                <?php echo htmlspecialchars($order_details['billing_street']); ?><br>
-                <?php echo htmlspecialchars($order_details['billing_city']); ?>, <?php echo htmlspecialchars($order_details['billing_postal_code']); ?><br>
-                <?php echo htmlspecialchars($order_details['billing_country']); ?>
-            </p>
         </div>
     </div>
 

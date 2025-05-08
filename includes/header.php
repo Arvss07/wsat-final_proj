@@ -12,6 +12,19 @@ if (!function_exists('asset')) {
         return rtrim($app_url, '/') . '/' . ltrim($path, '/');
     }
 }
+
+$brand_link = $app_url;
+if (isset($_SESSION['role'])) {
+    if ($_SESSION['role'] === 'Admin') {
+        $brand_link = $app_url . 'index.php?page=admin/dashboard';
+    } elseif ($_SESSION['role'] === 'Seller') {
+        $brand_link = $app_url . 'index.php?page=seller/my_products';
+    } else {
+        $brand_link = $app_url . 'index.php?page=home';
+    }
+} else {
+    $brand_link = $app_url . 'index.php?page=home';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +44,7 @@ if (!function_exists('asset')) {
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <div class="container">
-            <a class="navbar-brand" href="<?php echo $app_url; ?>"><?php echo htmlspecialchars($app_name); ?></a>
+            <a class="navbar-brand" href="<?php echo $brand_link; ?>"><?php echo htmlspecialchars($app_name); ?></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -65,8 +78,7 @@ if (!function_exists('asset')) {
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'seller/manage_orders') echo 'active'; ?>" href="index.php?page=seller/manage_orders">Manage Orders</a></li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'account') echo 'active'; ?>" href="index.php?page=account">My Account</a></li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'logout') echo 'active'; ?>" href="index.php?page=logout">Logout</a></li>
-                        <?php else: // Shopper or other roles 
-                        ?>
+                        <?php elseif ($user_role === 'Shopper'): ?>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'home') echo 'active'; ?>" href="index.php?page=home">Home</a></li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'account') echo 'active'; ?>" href="index.php?page=account">My Account</a></li>
                             <li class="nav-item position-relative">
@@ -75,6 +87,7 @@ if (!function_exists('asset')) {
                                     <span id="cart-badge" class="badge bg-primary position-absolute top-0 start-100 translate-middle rounded-pill" style="font-size:0.8em;">0</span>
                                 </a>
                             </li>
+                            <li class="nav-item"><a class="nav-link <?php if ($current_page === 'orders') echo 'active'; ?>" href="index.php?page=orders">View Orders</a></li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'logout') echo 'active'; ?>" href="index.php?page=logout">Logout</a></li>
                         <?php endif; ?>
                     <?php endif; ?>

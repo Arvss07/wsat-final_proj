@@ -109,7 +109,7 @@ CREATE TABLE `orders` (
   `id` VARCHAR(36) PRIMARY KEY,
   `user_id` VARCHAR(36) NULL, -- Can be NULL if user is deleted
   `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `status` ENUM('Pending', 'Awaiting Payment', 'Processing', 'Shipped', 'Delivered', 'Cancelled') NOT NULL DEFAULT 'Pending',
+  `status` ENUM('Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled') NOT NULL DEFAULT 'Pending',
   `total_amount` DECIMAL(10, 2) NOT NULL,
   `shipping_street` VARCHAR(255) NOT NULL,
   `shipping_city` VARCHAR(100) NOT NULL,

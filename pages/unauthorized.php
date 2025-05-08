@@ -11,5 +11,5 @@ if (isset($_GET['message']) && !empty(trim($_GET['message']))) {
 <div class="p-5 mb-4 bg-light rounded-3 text-center">
     <h1 class="display-1">403</h1>
     <p class="lead"><?php echo $custom_message; ?></p>
-    <a href="index.php?page=home" class="btn btn-primary mt-3">Go Home</a>
+    <a href="index.php" class="btn btn-primary mt-3">Go Home</a>
 </div>

@@ -20,3 +20,11 @@ if (!function_exists('generateUuidV4')) {
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 }
+
+function generate_numeric_reference() {
+    $parts = [];
+    for ($i = 0; $i < 4; $i++) {
+        $parts[] = str_pad(strval(random_int(0, 9999)), 4, '0', STR_PAD_LEFT);
+    }
+    return implode('-', $parts);
+}
