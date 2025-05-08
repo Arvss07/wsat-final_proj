@@ -113,8 +113,9 @@ CREATE TABLE `orders` (
   `total_amount` DECIMAL(10, 2) NOT NULL,
   `shipping_street` VARCHAR(255) NOT NULL,
   `shipping_city` VARCHAR(100) NOT NULL,
-  `shipping_postal_code` VARCHAR(20) NOT NULL,
+  `shipping_barangay` VARCHAR(100) NOT NULL,
   `shipping_country` VARCHAR(100) NOT NULL,
+  `shipping_postal_code` VARCHAR(20) NOT NULL,
   `payment_method` ENUM('Cash on Delivery', 'E-Payment') NOT NULL,
   `payment_status` ENUM('Pending', 'Paid', 'Failed') NOT NULL DEFAULT 'Pending',
   `epayment_type` VARCHAR(50) NULL, -- e.g., 'GCash', 'Maya', NULL if not E-Payment

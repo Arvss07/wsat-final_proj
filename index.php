@@ -93,7 +93,6 @@ switch ($page) {
         $page_title = 'Reset Password';
         break;
     case 'logout':
-        // Handle logout logic here (e.g., in api/auth/logout_handler.php or directly)
         session_unset();
         session_destroy();
         header("Location: index.php?page=login&message=You have been logged out.");
@@ -171,7 +170,12 @@ switch ($page) {
         $page_path = __DIR__ . '/seller/cancel_order.php'; // You may need to create this file
         $page_title = 'Cancel Order';
         break;
-    // ... other seller pages
+    
+    // Shopper Pages
+    case 'product_detail':
+        $page_path = __DIR__ . '/pages/product_detail.php';
+        $page_title = 'Product Details';
+        break;
 
     case 'unauthorized':
         $page_path = __DIR__ . '/pages/unauthorized.php';

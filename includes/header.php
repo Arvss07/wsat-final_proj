@@ -69,7 +69,12 @@ if (!function_exists('asset')) {
                         ?>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'home') echo 'active'; ?>" href="index.php?page=home">Home</a></li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'account') echo 'active'; ?>" href="index.php?page=account">My Account</a></li>
-                            <li class="nav-item"><a class="nav-link <?php if ($current_page === 'cart') echo 'active'; ?>" href="index.php?page=cart">Cart</a></li>
+                            <li class="nav-item position-relative">
+                                <a class="nav-link <?php if ($current_page === 'cart') echo 'active'; ?>" href="index.php?page=cart">
+                                    <i class="bi bi-cart3"></i> Cart
+                                    <span id="cart-badge" class="badge bg-primary position-absolute top-0 start-100 translate-middle rounded-pill" style="font-size:0.8em;">0</span>
+                                </a>
+                            </li>
                             <li class="nav-item"><a class="nav-link <?php if ($current_page === 'logout') echo 'active'; ?>" href="index.php?page=logout">Logout</a></li>
                         <?php endif; ?>
                     <?php endif; ?>
@@ -93,3 +98,21 @@ if (!function_exists('asset')) {
                 <?php else : ?>
                     <!-- Page content will be loaded here for non-admin pages -->
                 <?php endif; ?>
+
+<script>
+function updateCartBadge() {
+    fetch('api/cart/cart_count.php')
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const badge = document.getElementById('cart-badge');
+                if (badge) badge.textContent = data.count;
+            }
+        });
+}
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('cart-badge')) {
+        updateCartBadge();
+    }
+});
+</script>
