@@ -4,7 +4,7 @@
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../config/database.php'; // Adjust path as needed
-require_once __DIR__ . '/../../utils/uuid.php'; // For generate_uuid if ever needed, though not directly for fetching
+require_once __DIR__ . '/../../utils/uuid.php'; // For generate_uuid if ever needed
 
 // Function to fetch products by category (adapted from home.php)
 function get_products_by_category(mysqli $conn, string $categoryId, int $limit = 12, int $offset = 0): array

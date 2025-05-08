@@ -47,8 +47,9 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
                 <div class="list-group">
                     <?php if (!empty($all_categories)): ?>
                         <?php foreach ($all_categories as $category): ?>
-                            <a href="<?php echo htmlspecialchars($app_url . 'index.php?page=home&category_id=' . $category['id']); ?>#product-display-area"
-                                class="list-group-item list-group-item-action <?php echo (isset($_GET['category_id']) && $_GET['category_id'] == $category['id']) ? 'active' : ''; ?>">
+                            <a href="#product-display-area"
+                               class="list-group-item list-group-item-action category-nav-link"
+                               data-category-id="<?php echo htmlspecialchars($category['id']); ?>">
                                 <?php echo htmlspecialchars($category['name']); ?>
                             </a>
                         <?php endforeach; ?>
@@ -345,30 +346,38 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
         }
 
         function fetchProducts(categoryId, categoryName, page = 1) {
-            // Show a loading indicator (optional)
             productGrid.innerHTML = '<div class="text-center w-100"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> <p>Loading products...</p></div>';
-            if (paginationContainer) paginationContainer.innerHTML = ''; // Clear old pagination
+            if (paginationContainer) paginationContainer.innerHTML = '';
 
-            const ajaxUrl = `<?php echo $app_url; ?>api/products_getter.php?category_id=${categoryId}&page=${page}`;
-            // If categoryId is 'all_new', adjust the API endpoint or parameters
-            // For now, assuming products_getter.php can handle 'all_new' or an empty category_id for new arrivals
+            let ajaxUrl;
+            if (categoryId && categoryId !== 'all_new') {
+                ajaxUrl = `<?php echo $app_url; ?>api/products/category_products_handler.php?category_id=${categoryId}&page=${page}`;
+            } else {
+                ajaxUrl = `<?php echo $app_url; ?>api/products_getter.php?page=${page}`;
+            }
 
             fetch(ajaxUrl)
                 .then(response => response.json())
                 .then(data => {
-                    productGrid.innerHTML = ''; // Clear loading/previous products
-                    if (data.products && data.products.length > 0) {
-                        data.products.forEach(product => {
-                            // This part needs to dynamically create the product card HTML
-                            // It's better to have a JS template or fetch pre-rendered HTML cards
-                            // For simplicity here, just showing names. You'd use your product_card.php structure.
+                    productGrid.innerHTML = '';
+                    let products = [];
+                    let pagination = null;
+                    if (data.success && data.data) {
+                        products = data.data.products || data.products || [];
+                        pagination = data.data.pagination || data.pagination || null;
+                    } else if (data.products) {
+                        products = data.products;
+                        pagination = data.pagination || null;
+                    }
+                    if (products.length > 0) {
+                        products.forEach(product => {
                             const cardHTML = `
                         <div class="col mb-4">
                             <div class="card h-100">
                                 <img src="<?php echo $app_url; ?>${product.image_path ? product.image_path : 'assets/img/placeholder.png'}" class="card-img-top" alt="${product.name}" style="height: 200px; object-fit: cover;">
                                 <div class="card-body">
                                     <h5 class="card-title">${product.name}</h5>
-                                    <p class="card-text">Price: $${parseFloat(product.price).toFixed(2)}</p>
+                                    <p class="card-text">Price: ₱${parseFloat(product.price).toFixed(2)}</p>
                                     <a href="<?php echo $app_url; ?>index.php?page=product_detail&id=${product.id}" class="btn btn-primary">View Details</a>
                                 </div>
                             </div>
@@ -378,53 +387,33 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
                     } else {
                         productGrid.innerHTML = '<p class="text-center w-100">No products found in this category.</p>';
                     }
-
                     if (productDisplayTitle) {
-                        productDisplayTitle.innerHTML = `<i class="bi bi-grid"></i> ${data.category_title || categoryName || 'Products'}`;
+                        productDisplayTitle.innerHTML = `<i class="bi bi-grid"></i> ${categoryName || 'Products'}`;
                     }
-
                     // Update pagination
-                    if (data.pagination && paginationContainer) {
-                        paginationContainer.innerHTML = data.pagination;
-                        // Re-attach event listeners if pagination links are clicked for AJAX pagination
-                        attachPaginationEventListeners();
+                    if (pagination && paginationContainer) {
+                        // Build pagination HTML
+                        let pagHtml = '<nav aria-label="Page navigation"><ul class="pagination justify-content-center">';
+                        const totalPages = pagination.total_pages || 1;
+                        const currentPage = pagination.current_page || 1;
+                        for (let i = 1; i <= totalPages; i++) {
+                            pagHtml += `<li class="page-item${i === currentPage ? ' active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                        }
+                        pagHtml += '</ul></nav>';
+                        paginationContainer.innerHTML = pagHtml;
+                        // Attach event listeners
+                        paginationContainer.querySelectorAll('.page-link').forEach(link => {
+                            link.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                fetchProducts(categoryId, categoryName, parseInt(this.dataset.page));
+                            });
+                        });
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching products:', error);
                     productGrid.innerHTML = '<p class="text-center w-100 text-danger">Could not load products. Please try again later.</p>';
                 });
-        }
-
-        function attachPaginationEventListeners() {
-            const paginationLinks = paginationContainer.querySelectorAll('.page-link');
-            paginationLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const url = new URL(this.href);
-                    const page = url.searchParams.get('p') || url.searchParams.get('p_cat') || url.searchParams.get('p_na') || 1;
-                    const categoryId = new URL(window.location.href).searchParams.get('category_id') || 'all_new';
-                    const categoryName = document.querySelector(`.category-nav-link[data-category-id="${categoryId}"]`)?.textContent.trim() || "New Arrivals";
-
-                    // Update URL for pagination
-                    const currentUrl = new URL(window.location.href);
-                    if (categoryId === 'all_new') {
-                        currentUrl.searchParams.set('p_na', page);
-                        currentUrl.searchParams.delete('p_cat');
-                    } else {
-                        currentUrl.searchParams.set('p_cat', page);
-                        currentUrl.searchParams.delete('p_na');
-                    }
-                    history.pushState({}, '', currentUrl.toString() + '#product-display-area');
-
-                    fetchProducts(categoryId, categoryName, page);
-                });
-            });
-        }
-
-        // Initial setup for pagination if loaded via PHP
-        if (paginationContainer && paginationContainer.innerHTML.trim() !== '') {
-            attachPaginationEventListeners();
         }
 
         // Handle initial category loading if category_id is in URL (from sidebar link)
