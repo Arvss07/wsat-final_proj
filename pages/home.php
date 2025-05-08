@@ -8,6 +8,8 @@ $app_url = rtrim($_ENV['APP_URL'] ?? 'http://localhost/wsat-final_proj', '/') . 
 
 $products_per_page = 12;
 
+$all_categories = get_all_categories($conn);
+
 // Determine current page for new arrivals (default to 1)
 $current_page_new_arrivals = isset($_GET['p_na']) ? max(1, (int)$_GET['p_na']) : 1;
 $offset_new_arrivals = ($current_page_new_arrivals - 1) * $products_per_page;
@@ -26,7 +28,7 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
             <div class="bg-light p-3 rounded mb-4">
                 <h5><i class="bi bi-search"></i> Search</h5>
                 <form action="<?php echo $app_url; ?>index.php" method="GET">
-                    <input type="hidden" name="page" value="products"> <!-- Or a dedicated search results page -->
+                    <input type="hidden" name="page" value="products">
                     <div class="input-group mb-3">
                         <input type="text" name="query" class="form-control" placeholder="Search products...">
                         <button class="btn btn-outline-secondary" type="submit">Go</button>
@@ -59,6 +61,13 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
 
         <!-- Main Content -->
         <main class="col-lg-9">
+            <!-- Promotions/Announcements Placeholder -->
+            <section id="promotions" class="mb-5 p-4 bg-info bg-opacity-10 border border-info rounded">
+                <h2><i class="bi bi-megaphone"></i> Special Announcements</h2>
+                <p>Check back soon for exciting offers and news!</p>
+                <!-- Placeholder content -->
+            </section>
+
             <!-- Carousel for Newest Products -->
             <section id="newest-product-carousel" class="mb-5">
                 <h2><i class="bi bi-stars"></i> Hot & New</h2>
@@ -151,16 +160,74 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
                 </div>
             </section>
 
-            <!-- Promotions/Announcements Placeholder -->
-            <section id="promotions" class="mb-5 p-4 bg-info bg-opacity-10 border border-info rounded">
-                <h2><i class="bi bi-megaphone"></i> Special Announcements</h2>
-                <p>Check back soon for exciting offers and news!</p>
-                <!-- Placeholder content -->
+            <!-- General Product Listing Section -->
+            <section id="all-products-section" class="mb-5">
+                <h2><i class="bi bi-box"></i> All Products</h2>
+                <div id="all-products-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                    <?php
+                    // General product listing (random order)
+                    $current_page_all_products = isset($_GET['p_all']) ? max(1, (int)$_GET['p_all']) : 1;
+                    $offset_all_products = ($current_page_all_products - 1) * $products_per_page;
+                    $all_products_data = get_all_products_random($conn, $products_per_page, $offset_all_products);
+                    $total_products_all = count_all_products($conn);
+                    $total_pages_all = ($products_per_page > 0) ? ceil($total_products_all / $products_per_page) : 1;
+
+                    if (!empty($all_products_data)):
+                        foreach ($all_products_data as $product) {
+                            include __DIR__ . '/../includes/components/product_card.php';
+                        }
+                    else:
+                        echo '<p class="text-center">No products found.</p>';
+                    endif;
+                    ?>
+                </div>
+                <div class="mt-4">
+                    <?php
+                    if ($total_pages_all > 1) {
+                        $current_page = $current_page_all_products;
+                        $total_pages = $total_pages_all;
+                        $base_url = $app_url . 'index.php?page=home&p_all=';
+                        include __DIR__ . '/../includes/components/pagination_controls.php';
+                    }
+                    ?>
+                </div>
             </section>
 
         </main>
     </div>
 </div>
+
+<style>
+#productCarousel .carousel-caption {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 2;
+}
+#productCarousel .carousel-item:hover .carousel-caption {
+    opacity: 1;
+    pointer-events: auto;
+}
+#productCarousel .carousel-control-prev,
+#productCarousel .carousel-control-next {
+    z-index: 3;
+}
+#productCarousel .carousel-control-prev-icon,
+#productCarousel .carousel-control-next-icon {
+    background-color: #0d6efd; /* Bootstrap blue */
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-size: 60% 60%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+#productCarousel .carousel-control-prev-icon {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 8 8"><path d="M5.5 0L4.8.7 1.5 4l3.3 3.3.7.7 1-1-2.6-2.6 2.6-2.6z"/></svg>');
+}
+#productCarousel .carousel-control-next-icon {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 8 8"><path d="M2.5 0l.7.7L6.5 4l-3.3 3.3-.7.7-1-1 2.6-2.6-2.6-2.6z"/></svg>');
+}
+</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

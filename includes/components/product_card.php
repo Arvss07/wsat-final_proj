@@ -29,7 +29,7 @@ $details_link = htmlspecialchars($app_url . 'index.php?page=product_detail&id=' 
             <h5 class="card-title">
                 <a href="<?php echo $details_link; ?>" class="text-decoration-none text-dark"><?php echo $product_name; ?></a>
             </h5>
-            <p class="card-text text-muted">Price: $<?php echo $product_price; ?></p>
+            <p class="card-text text-muted">Price: ₱<?php echo $product_price; ?></p>
             <div class="mt-auto">
                 <a href="<?php echo $details_link; ?>" class="btn btn-primary w-100">View Details</a>
             </div>
