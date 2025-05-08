@@ -16,14 +16,14 @@ if (!function_exists('asset')) {
 $brand_link = $app_url;
 if (isset($_SESSION['role'])) {
     if ($_SESSION['role'] === 'Admin') {
-        $brand_link = $app_url . 'index.php?page=admin/dashboard';
+        $brand_link = $app_url . '/index.php?page=admin/dashboard';
     } elseif ($_SESSION['role'] === 'Seller') {
-        $brand_link = $app_url . 'index.php?page=seller/my_products';
+        $brand_link = $app_url . '/index.php?page=seller/my_products';
     } else {
-        $brand_link = $app_url . 'index.php?page=home';
+        $brand_link = $app_url . '/index.php?page=home';
     }
 } else {
-    $brand_link = $app_url . 'index.php?page=home';
+    $brand_link = $app_url . '/index.php?page=home';
 }
 ?>
 <!DOCTYPE html>
