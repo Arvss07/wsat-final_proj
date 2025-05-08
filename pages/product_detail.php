@@ -15,7 +15,7 @@ if (!$product_id) {
 }
 
 // Fetch product details
-$sql = "SELECT p.*, u.name AS seller_name FROM products p JOIN users u ON p.seller_id = u.id WHERE p.id = ? LIMIT 1";
+$sql = "SELECT p.*, u.name AS seller_name, u.id AS seller_id FROM products p JOIN users u ON p.seller_id = u.id WHERE p.id = ? LIMIT 1";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param('s', $product_id);
 $stmt->execute();
@@ -27,6 +27,18 @@ if (!$product) {
     echo '<div class="container mt-5"><div class="alert alert-danger">Product not found.<br><a href="index.php?page=home" class="btn btn-outline-primary mt-3">Go Back</a></div></div>';
     exit;
 }
+
+// Fetch seller business address (default address)
+$seller_address = null;
+$sql_addr = "SELECT street, barangay, city, province, country, postal_code FROM addresses WHERE user_id = ? AND is_default = 1 LIMIT 1";
+$stmt_addr = $conn->prepare($sql_addr);
+$stmt_addr->bind_param('s', $product['seller_id']);
+$stmt_addr->execute();
+$res_addr = $stmt_addr->get_result();
+if ($res_addr && $res_addr->num_rows > 0) {
+    $seller_address = $res_addr->fetch_assoc();
+}
+$stmt_addr->close();
 
 // Fetch all images for the product
 $images = [];
@@ -70,6 +82,21 @@ $is_out_of_stock = $stock < 1;
         <div class="col-md-6">
             <h2 class="product-detail-title mb-2"><?php echo htmlspecialchars($product['name']); ?></h2>
             <p class="text-muted mb-1">By: <?php echo htmlspecialchars($product['seller_name']); ?></p>
+            <div class="mb-2">
+                <span class="fw-bold">Address:</span><br>
+                <?php if ($seller_address): ?>
+                    <span class="text-secondary small">
+                        <?php echo htmlspecialchars($seller_address['street']); ?>, 
+                        <?php echo htmlspecialchars($seller_address['barangay']); ?>, 
+                        <?php echo htmlspecialchars($seller_address['city']); ?>, 
+                        <?php echo htmlspecialchars($seller_address['province']); ?>, 
+                        <?php echo htmlspecialchars($seller_address['country']); ?>, 
+                        <?php echo htmlspecialchars($seller_address['postal_code']); ?>
+                    </span>
+                <?php else: ?>
+                    <span class="text-danger small">No business address set.</span>
+                <?php endif; ?>
+            </div>
             <div class="product-detail-price mb-3">₱<?php echo number_format($product['price'], 2); ?></div>
             <p class="mb-2"><?php echo nl2br(htmlspecialchars($product['description'])); ?></p>
             <p class="product-detail-stock mb-2">Stock: <span class="fw-bold <?php echo $is_out_of_stock ? 'text-danger' : 'text-success'; ?>"><?php echo $stock; ?></span></p>

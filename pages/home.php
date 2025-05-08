@@ -27,10 +27,10 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
         <aside class="col-lg-3">
             <div class="bg-light p-3 rounded mb-4">
                 <h5><i class="bi bi-search"></i> Search</h5>
-                <form action="<?php echo $app_url; ?>index.php" method="GET">
+                <form id="productSearchForm" action="<?php echo $app_url; ?>index.php" method="GET">
                     <input type="hidden" name="page" value="products">
                     <div class="input-group mb-3">
-                        <input type="text" name="query" class="form-control" placeholder="Search products...">
+                        <input type="text" name="query" id="productSearchInput" class="form-control" placeholder="Search products..." autocomplete="off">
                         <button class="btn btn-outline-secondary" type="submit">Go</button>
                     </div>
                 </form>
@@ -435,4 +435,80 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
         }
 
     });
+
+    // AJAX Product Search Implementation
+    (function() {
+        const searchInput = document.getElementById('productSearchInput');
+        const productGrid = document.getElementById('product-grid');
+        const productDisplayTitle = document.getElementById('product-display-title');
+        let searchTimeout = null;
+        let lastQuery = '';
+
+        function renderProducts(products) {
+            if (!products.length) {
+                productGrid.innerHTML = '<p class="text-center w-100">No products found.</p>';
+                return;
+            }
+            productGrid.innerHTML = '';
+            products.forEach(product => {
+                const imgSrc = product.image_path ? '<?php echo $app_url; ?>' + product.image_path : '<?php echo $app_url; ?>assets/img/default_avatar.png';
+                const detailUrl = '<?php echo $app_url; ?>index.php?page=product_detail&id=' + product.id;
+                productGrid.insertAdjacentHTML('beforeend', `
+                    <div class="col mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <a href="${detailUrl}">
+                                <img src="${imgSrc}" class="card-img-top" alt="${product.name}" style="height: 200px; object-fit: cover;">
+                            </a>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">
+                                    <a href="${detailUrl}" class="text-decoration-none text-dark">${product.name}</a>
+                                </h5>
+                                <p class="card-text text-muted">Price: ₱${parseFloat(product.price).toFixed(2)}</p>
+                                <div class="mt-auto">
+                                    <a href="${detailUrl}" class="btn btn-primary w-100">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function doSearch(query) {
+            if (!query) {
+                // If search is cleared, reload default products (optional: reload page or restore PHP-rendered grid)
+                window.location.reload();
+                return;
+            }
+            productGrid.innerHTML = '<div class="text-center w-100"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> <p>Searching...</p></div>';
+            fetch('<?php echo $app_url; ?>api/products/search_products.php?query=' + encodeURIComponent(query))
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        productDisplayTitle.innerHTML = `<i class='bi bi-search'></i> Search Results for "${query}"`;
+                        renderProducts(data.products);
+                    } else {
+                        productGrid.innerHTML = '<p class="text-center w-100 text-danger">No products found.</p>';
+                    }
+                })
+                .catch(() => {
+                    productGrid.innerHTML = '<p class="text-center w-100 text-danger">Could not search products. Please try again later.</p>';
+                });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const query = e.target.value.trim();
+                if (query === lastQuery) return;
+                lastQuery = query;
+                if (searchTimeout) clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => doSearch(query), 400); // Debounce
+            });
+            // Prevent default form submit
+            document.getElementById('productSearchForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                doSearch(searchInput.value.trim());
+            });
+        }
+    })();
 </script>
