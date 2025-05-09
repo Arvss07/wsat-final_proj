@@ -48,8 +48,8 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
                     <?php if (!empty($all_categories)): ?>
                         <?php foreach ($all_categories as $category): ?>
                             <a href="#product-display-area"
-                               class="list-group-item list-group-item-action category-nav-link"
-                               data-category-id="<?php echo htmlspecialchars($category['id']); ?>">
+                                class="list-group-item list-group-item-action category-nav-link"
+                                data-category-id="<?php echo htmlspecialchars($category['id']); ?>">
                                 <?php echo htmlspecialchars($category['name']); ?>
                             </a>
                         <?php endforeach; ?>
@@ -199,35 +199,41 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
 </div>
 
 <style>
-#productCarousel .carousel-caption {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    z-index: 2;
-}
-#productCarousel .carousel-item:hover .carousel-caption {
-    opacity: 1;
-    pointer-events: auto;
-}
-#productCarousel .carousel-control-prev,
-#productCarousel .carousel-control-next {
-    z-index: 3;
-}
-#productCarousel .carousel-control-prev-icon,
-#productCarousel .carousel-control-next-icon {
-    background-color: #0d6efd; /* Bootstrap blue */
-    border-radius: 50%;
-    width: 2.5rem;
-    height: 2.5rem;
-    background-size: 60% 60%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-#productCarousel .carousel-control-prev-icon {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 8 8"><path d="M5.5 0L4.8.7 1.5 4l3.3 3.3.7.7 1-1-2.6-2.6 2.6-2.6z"/></svg>');
-}
-#productCarousel .carousel-control-next-icon {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 8 8"><path d="M2.5 0l.7.7L6.5 4l-3.3 3.3-.7.7-1-1 2.6-2.6-2.6-2.6z"/></svg>');
-}
+    #productCarousel .carousel-caption {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    #productCarousel .carousel-item:hover .carousel-caption {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    #productCarousel .carousel-control-prev,
+    #productCarousel .carousel-control-next {
+        z-index: 3;
+    }
+
+    #productCarousel .carousel-control-prev-icon,
+    #productCarousel .carousel-control-next-icon {
+        background-color: #0d6efd;
+        /* Bootstrap blue */
+        border-radius: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        background-size: 60% 60%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    #productCarousel .carousel-control-prev-icon {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 8 8"><path d="M5.5 0L4.8.7 1.5 4l3.3 3.3.7.7 1-1-2.6-2.6 2.6-2.6z"/></svg>');
+    }
+
+    #productCarousel .carousel-control-next-icon {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 8 8"><path d="M2.5 0l.7.7L6.5 4l-3.3 3.3-.7.7-1-1 2.6-2.6-2.6-2.6z"/></svg>');
+    }
 </style>
 
 <script>
@@ -315,7 +321,7 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
                                 <img src="${productImageSrc}" class="d-block w-100" alt="${productName}" style="max-height: 400px; object-fit: contain; background-color: #f8f9fa;">
                                 <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-2 rounded">
                                     <h5>${productName}</h5>
-                                    <p>Price: $${productPrice} <a href="${productDetailUrl}" class="btn btn-sm btn-light">View</a></p>
+                                    <p>Price: ₱${productPrice} <a href="${productDetailUrl}" class="btn btn-sm btn-light">View</a></p>
                                 </div>
                             `;
                             carouselInnerContainer.appendChild(item);

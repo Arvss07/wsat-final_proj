@@ -61,11 +61,13 @@ $total_amount = 0;
 foreach ($cart_items as $item) {
     $total_amount += $item['price'] * $item['quantity'];
 }
-$sql = "INSERT INTO orders (id, user_id, total_amount, payment_method, payment_status, shipping_street, shipping_city, shipping_postal_code, shipping_country, status, epayment_type, epayment_reference_id) VALUES (?, ?, ?, ?, 'Pending', ?, ?, ?, ?, 'Pending', ?, ?)";
+$sql = "INSERT INTO orders (id, user_id, total_amount, payment_method, payment_status, shipping_street, shipping_barangay, shipping_city, shipping_province, shipping_country, shipping_postal_code, status, epayment_type, epayment_reference_id) VALUES (?, ?, ?, ?, 'Pending', ?, ?, ?, ?, ?, ?, 'Pending', ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param('ssdsssssss', $order_id, $user_id, $total_amount, $payment_method, $address['street'], $address['city'], $address['postal_code'], $address['country'], $epayment_type, $epayment_reference_id);
+$stmt->bind_param('ssdsssssssss', $order_id, $user_id, $total_amount, $payment_method, $address['street'], $address['barangay'], $address['city'], $address['province'], $address['country'], $address['postal_code'], $epayment_type, $epayment_reference_id);
 $stmt->execute();
 $stmt->close();
+
+
 
 // Insert order items and update stock
 foreach ($cart_items as $item) {
@@ -88,4 +90,4 @@ $stmt->bind_param('s', $user_id);
 $stmt->execute();
 $stmt->close();
 
-echo json_encode(['success' => true, 'message' => 'Your order has been placed! The seller will see your order in their dashboard.']); 
+echo json_encode(['success' => true, 'message' => 'Your order has been placed! The seller will see your order in their dashboard.']);
