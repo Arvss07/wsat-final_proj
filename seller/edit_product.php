@@ -118,33 +118,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($product)) {
 
 
     // --- File Upload Handling (for new images) ---
-    $uploaded_images_paths_new = []; // Store paths of newly uploaded and converted images
+    $uploaded_images_paths_new = []; // Store paths of newly uploaded images
     $image_files = $_FILES['product_images_new'] ?? null;
     $num_new_files = $image_files ? count($image_files['name']) : 0;
     $upload_dir = __DIR__ . '/../uploads/products/';
-    $avif_support_needed_for_new = false;
 
     if ($num_new_files > 0 && $image_files['error'][0] !== UPLOAD_ERR_NO_FILE) {
         for ($i = 0; $i < $num_new_files; $i++) {
             if ($image_files['error'][$i] === UPLOAD_ERR_OK) {
-                $tmp_name_check = $image_files['tmp_name'][$i];
-                $file_mime_type_check = mime_content_type($tmp_name_check);
-                if ($file_mime_type_check !== 'image/avif') {
-                    $avif_support_needed_for_new = true;
-                    break;
-                }
-            }
-        }
+                $tmp_name = $image_files['tmp_name'][$i];
+                $original_name = $image_files['name'][$i];
+                $allowed_mime_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
+                $file_mime_type = mime_content_type($tmp_name);
 
-        if ($avif_support_needed_for_new && !function_exists('imageavif')) {
-            $errors[] = "Server does not support AVIF image conversion for new non-AVIF files. Please upload AVIF directly or contact support.";
+                if (!in_array($file_mime_type, $allowed_mime_types)) {
+                    $errors[] = "Invalid file type for " . htmlspecialchars($original_name) . ". Only JPG, PNG, GIF, WEBP, or AVIF are allowed.";
+                    continue;
+                }
+
+                // Get file extension
+                $ext = pathinfo($original_name, PATHINFO_EXTENSION);
+                $unique_filename = uniqid('product_', true) . '.' . $ext;
+                $destination = $upload_dir . $unique_filename;
+
+                if (move_uploaded_file($tmp_name, $destination)) {
+                    $uploaded_images_paths_new[] = ['path' => 'uploads/products/' . $unique_filename, 'is_primary' => false]; // New images are not primary by default
+                } else {
+                    $errors[] = "Failed to move uploaded file: " . htmlspecialchars($original_name);
+                }
+            } elseif ($image_files['error'][$i] !== UPLOAD_ERR_NO_FILE) {
+                $errors[] = "Error with new file " . htmlspecialchars($image_files['name'][$i]) . ": Error code " . $image_files['error'][$i];
+            }
         }
     }
 
     // --- Image Deletion Handling ---
     $images_to_delete = $_POST['delete_images'] ?? [];
 
-    if (empty($errors)) { // Proceed only if AVIF support is present (if needed for new files) or no errors yet
+    if (empty($errors)) { // Proceed only if no errors yet
         // Process new image uploads
         if ($num_new_files > 0 && $image_files['error'][0] !== UPLOAD_ERR_NO_FILE) {
             for ($i = 0; $i < $num_new_files; $i++) {
@@ -159,46 +170,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($product)) {
                         continue;
                     }
 
-                    $avif_filename = uniqid('product_', true) . '.avif';
-                    $avif_destination = $upload_dir . $avif_filename;
+                    // Get file extension
+                    $ext = pathinfo($original_name, PATHINFO_EXTENSION);
+                    $unique_filename = uniqid('product_', true) . '.' . $ext;
+                    $destination = $upload_dir . $unique_filename;
 
-                    if ($file_mime_type === 'image/avif') {
-                        if (move_uploaded_file($tmp_name, $avif_destination)) {
-                            $uploaded_images_paths_new[] = ['path' => 'uploads/products/' . $avif_filename, 'is_primary' => false]; // New images are not primary by default
-                        } else {
-                            $errors[] = "Failed to move uploaded AVIF file: " . htmlspecialchars($original_name);
-                        }
+                    if (move_uploaded_file($tmp_name, $destination)) {
+                        $uploaded_images_paths_new[] = ['path' => 'uploads/products/' . $unique_filename, 'is_primary' => false]; // New images are not primary by default
                     } else {
-                        if (!function_exists('imageavif')) {
-                            $errors[] = "AVIF conversion support is not available on the server (new images).";
-                            continue;
-                        }
-                        $source_image = null;
-                        switch ($file_mime_type) {
-                            case 'image/jpeg':
-                                $source_image = @imagecreatefromjpeg($tmp_name);
-                                break;
-                            case 'image/png':
-                                $source_image = @imagecreatefrompng($tmp_name);
-                                break;
-                            case 'image/gif':
-                                $source_image = @imagecreatefromgif($tmp_name);
-                                break;
-                            case 'image/webp':
-                                $source_image = @imagecreatefromwebp($tmp_name);
-                                break;
-                        }
-
-                        if (!$source_image) {
-                            $errors[] = "Failed to read image file for conversion: " . htmlspecialchars($original_name);
-                            continue;
-                        }
-                        if (imageavif($source_image, $avif_destination)) {
-                            $uploaded_images_paths_new[] = ['path' => 'uploads/products/' . $avif_filename, 'is_primary' => false];
-                        } else {
-                            $errors[] = "Failed to convert image " . htmlspecialchars($original_name) . " to AVIF format.";
-                        }
-                        imagedestroy($source_image);
+                        $errors[] = "Failed to move uploaded file: " . htmlspecialchars($original_name);
                     }
                 } elseif ($image_files['error'][$i] !== UPLOAD_ERR_NO_FILE) {
                     $errors[] = "Error with new file " . htmlspecialchars($image_files['name'][$i]) . ": Error code " . $image_files['error'][$i];
