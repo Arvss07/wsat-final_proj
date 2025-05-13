@@ -21,40 +21,57 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
 
 ?>
 
+<!-- Hero Section -->
+<section class="py-5 mb-4 bg-primary bg-gradient text-white rounded-4 shadow position-relative overflow-hidden" style="background: url('assets/img/hero-bg.jpg') center/cover no-repeat; min-height: 320px;">
+    <div class="container position-relative z-2">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1 class="display-4 fw-bold mb-3"><i class="bi bi-bag-heart"></i> Welcome to Shoe Store!</h1>
+                <p class="lead mb-4">Discover the latest arrivals, exclusive deals, and your favorite brands. Step up your style with our curated collection!</p>
+                <a href="#product-display-area" class="btn btn-light btn-lg fw-semibold shadow-sm"><i class="bi bi-shop"></i> Shop Now</a>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block text-end">
+                <img src="assets/img/hero-shoes.png" alt="Trendy Shoes" class="img-fluid" style="max-height: 220px; filter: drop-shadow(0 0 2rem #0d6efd33);">
+            </div>
+        </div>
+    </div>
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary opacity-25 z-1"></div>
+</section>
+
 <div class="container-fluid mt-4">
     <div class="row">
         <!-- Sidebar -->
-        <aside class="col-lg-3">
-            <div class="bg-light p-3 rounded mb-4">
-                <h5><i class="bi bi-search"></i> Search</h5>
+        <aside class="col-lg-3 mb-4 mb-lg-0">
+            <div class="bg-white p-4 rounded-4 shadow-sm mb-4 border border-2 border-primary-subtle">
+                <h5 class="mb-3 text-primary"><i class="bi bi-search"></i> Search</h5>
                 <form id="productSearchForm" action="<?php echo $app_url; ?>index.php" method="GET">
                     <input type="hidden" name="page" value="products">
                     <div class="input-group mb-3">
-                        <input type="text" name="query" id="productSearchInput" class="form-control" placeholder="Search products..." autocomplete="off">
-                        <button class="btn btn-outline-secondary" type="submit">Go</button>
+                        <input type="text" name="query" id="productSearchInput" class="form-control form-control-lg" placeholder="Search products..." autocomplete="off">
+                        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
                     </div>
                 </form>
             </div>
 
-            <div class="bg-light p-3 rounded mb-4">
-                <h5><i class="bi bi-filter"></i> Filters</h5>
-                <!-- Placeholder for more advanced filters like price range, brand, etc. -->
-                <p class="small text-muted">Advanced filters coming soon.</p>
+            <div class="bg-white p-4 rounded-4 shadow-sm mb-4 border border-2 border-info-subtle">
+                <h5 class="mb-3 text-info"><i class="bi bi-filter"></i> Filters</h5>
+                <div class="alert alert-info py-2 px-3 small mb-0"><i class="bi bi-info-circle"></i> Advanced filters coming soon.</div>
             </div>
 
-            <div class="bg-light p-3 rounded">
-                <h5><i class="bi bi-tags"></i> Categories</h5>
-                <div class="list-group">
+            <div class="bg-white p-4 rounded-4 shadow-sm border border-2 border-success-subtle">
+                <h5 class="mb-3 text-success"><i class="bi bi-tags"></i> Categories</h5>
+                <div class="list-group list-group-flush">
+                    <a href="#product-display-area" class="list-group-item list-group-item-action category-nav-link fw-semibold" data-category-id="all_new">
+                        <i class="bi bi-stars"></i> New Arrivals
+                    </a>
                     <?php if (!empty($all_categories)): ?>
                         <?php foreach ($all_categories as $category): ?>
-                            <a href="#product-display-area"
-                                class="list-group-item list-group-item-action category-nav-link"
-                                data-category-id="<?php echo htmlspecialchars($category['id']); ?>">
-                                <?php echo htmlspecialchars($category['name']); ?>
+                            <a href="#product-display-area" class="list-group-item list-group-item-action category-nav-link" data-category-id="<?php echo htmlspecialchars($category['id']); ?>">
+                                <i class="bi bi-tag"></i> <?php echo htmlspecialchars($category['name']); ?>
                             </a>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <p>No categories found.</p>
+                        <span class="text-muted small">No categories found.</span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -63,22 +80,17 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
         <!-- Main Content -->
         <main class="col-lg-9">
             <!-- Promotions/Announcements Placeholder -->
-            <section id="promotions" class="mb-5 p-4 bg-info bg-opacity-10 border border-info rounded">
-                <h2><i class="bi bi-megaphone"></i> Special Announcements</h2>
-                <p>Check back soon for exciting offers and news!</p>
-                <!-- Placeholder content -->
+            <section id="promotions" class="mb-5 p-4 bg-info bg-opacity-10 border border-info rounded-4 shadow-sm">
+                <h2 class="mb-2 text-info"><i class="bi bi-megaphone"></i> Special Announcements</h2>
+                <p class="mb-0">Check back soon for exciting offers and news!</p>
             </section>
 
             <!-- Carousel for Newest Products -->
             <section id="newest-product-carousel" class="mb-5">
-                <h2><i class="bi bi-stars"></i> Hot & New</h2>
-                <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        <!-- Indicators will be loaded by JavaScript -->
-                    </div>
-                    <div class="carousel-inner">
-                        <!-- Carousel items will be loaded by JavaScript -->
-                    </div>
+                <h2 class="mb-3 text-primary"><i class="bi bi-stars"></i> Hot & New</h2>
+                <div id="productCarousel" class="carousel slide rounded-4 overflow-hidden shadow-sm" data-bs-ride="carousel">
+                    <div class="carousel-indicators"></div>
+                    <div class="carousel-inner"></div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
@@ -92,8 +104,8 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
 
             <!-- Product Display Area (Dynamic based on category nav or default to New Arrivals) -->
             <section id="product-display-area" class="mb-5">
-                <h2 id="product-display-title"><i class="bi bi-grid"></i> New Arrivals</h2> <!-- Title will change dynamically -->
-                <div id="product-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                <h2 id="product-display-title" class="mb-4"><i class="bi bi-grid"></i> New Arrivals</h2>
+                <div id="product-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
                     <?php
                     // Initial load: Display New Arrivals or selected category from sidebar link
                     $products_to_display = [];
@@ -163,8 +175,8 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
 
             <!-- General Product Listing Section -->
             <section id="all-products-section" class="mb-5">
-                <h2><i class="bi bi-box"></i> All Products</h2>
-                <div id="all-products-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                <h2 class="mb-4 text-secondary"><i class="bi bi-box"></i> All Products</h2>
+                <div id="all-products-grid" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
                     <?php
                     // General product listing (random order)
                     $current_page_all_products = isset($_GET['p_all']) ? max(1, (int)$_GET['p_all']) : 1;
@@ -193,12 +205,57 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
                     ?>
                 </div>
             </section>
-
         </main>
     </div>
 </div>
 
 <style>
+    /* Hero Section */
+    section.py-5.bg-primary {
+        background-blend-mode: multiply;
+        min-height: 320px;
+    }
+
+    section.py-5.bg-primary .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    section.py-5.bg-primary .img-fluid {
+        filter: drop-shadow(0 0 2rem #0d6efd33);
+    }
+
+    /* Sidebar */
+    .list-group-item.category-nav-link.active,
+    .list-group-item.category-nav-link:hover {
+        background: linear-gradient(90deg, #0d6efd11 0%, #0d6efd05 100%);
+        color: #0d6efd;
+        font-weight: 600;
+        border-left: 4px solid #0d6efd;
+    }
+
+    /* Product Cards */
+    #product-grid .card,
+    #all-products-grid .card {
+        border-radius: 1rem;
+        transition: box-shadow 0.2s, transform 0.2s;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    #product-grid .card:hover,
+    #all-products-grid .card:hover {
+        box-shadow: 0 8px 24px rgba(13, 110, 253, 0.10);
+        transform: translateY(-4px) scale(1.02);
+        border-color: #0d6efd33;
+    }
+
+    #product-grid .card-img-top,
+    #all-products-grid .card-img-top {
+        border-radius: 1rem 1rem 0 0;
+        background: #f8f9fa;
+    }
+
+    /* Carousel */
     #productCarousel .carousel-caption {
         opacity: 0;
         transition: opacity 0.3s ease;
@@ -219,7 +276,6 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
     #productCarousel .carousel-control-prev-icon,
     #productCarousel .carousel-control-next-icon {
         background-color: #0d6efd;
-        /* Bootstrap blue */
         border-radius: 50%;
         width: 2.5rem;
         height: 2.5rem;
@@ -227,12 +283,15 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
 
-    #productCarousel .carousel-control-prev-icon {
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 8 8"><path d="M5.5 0L4.8.7 1.5 4l3.3 3.3.7.7 1-1-2.6-2.6 2.6-2.6z"/></svg>');
-    }
+    /* Responsive tweaks */
+    @media (max-width: 991.98px) {
+        section.py-5.bg-primary .img-fluid {
+            display: none;
+        }
 
-    #productCarousel .carousel-control-next-icon {
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 8 8"><path d="M2.5 0l.7.7L6.5 4l-3.3 3.3-.7.7-1-1 2.6-2.6-2.6-2.6z"/></svg>');
+        aside.col-lg-3 {
+            margin-bottom: 2rem;
+        }
     }
 </style>
 
