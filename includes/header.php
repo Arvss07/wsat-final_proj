@@ -38,6 +38,7 @@ if (isset($_SESSION['role'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="<?php echo asset('assets/css/style.css'); ?>">
+    <link rel="icon" type="image/svg+xml" href="assets/img/temp-logo.svg">
 </head>
 
 <body>
@@ -112,20 +113,20 @@ if (isset($_SESSION['role'])) {
                     <!-- Page content will be loaded here for non-admin pages -->
                 <?php endif; ?>
 
-<script>
-function updateCartBadge() {
-    fetch('api/cart/cart_count.php')
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                const badge = document.getElementById('cart-badge');
-                if (badge) badge.textContent = data.count;
-            }
-        });
-}
-document.addEventListener('DOMContentLoaded', function() {
-    if (document.getElementById('cart-badge')) {
-        updateCartBadge();
-    }
-});
-</script>
+                <script>
+                    function updateCartBadge() {
+                        fetch('api/cart/cart_count.php')
+                            .then(res => res.json())
+                            .then(data => {
+                                if (data.success) {
+                                    const badge = document.getElementById('cart-badge');
+                                    if (badge) badge.textContent = data.count;
+                                }
+                            });
+                    }
+                    document.addEventListener('DOMContentLoaded', function() {
+                        if (document.getElementById('cart-badge')) {
+                            updateCartBadge();
+                        }
+                    });
+                </script>

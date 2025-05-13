@@ -68,6 +68,58 @@ $history_orders = array_filter($orders, function ($order) {
     .history-details.active {
         display: table-row;
     }
+
+    /* Animate chevron */
+    .order-row i,
+    .history-row i {
+        transition: transform 0.3s cubic-bezier(.4, 2, .6, 1), color 0.2s;
+    }
+
+    .order-row.active i,
+    .history-row.active i {
+        color: #0d6efd;
+    }
+
+    /* Add to cart button animation */
+    .add-to-cart-btn {
+        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+        border-radius: 50%;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 8px;
+        font-size: 1.2rem;
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.08);
+        background: #f8f9fa;
+        color: #0d6efd;
+        border: none;
+        outline: none;
+        cursor: pointer;
+    }
+
+    .add-to-cart-btn.btn-success {
+        background: #198754 !important;
+        color: #fff !important;
+        box-shadow: 0 4px 16px rgba(25, 135, 84, 0.15);
+    }
+
+    .add-to-cart-btn.btn-danger {
+        background: #dc3545 !important;
+        color: #fff !important;
+        box-shadow: 0 4px 16px rgba(220, 53, 69, 0.15);
+    }
+
+    .add-to-cart-btn i.spin {
+        animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 <div class="container py-5">
     <h2 class="mb-4"><i class="bi bi-list-check"></i> My Orders</h2>
@@ -182,6 +234,9 @@ $history_orders = array_filter($orders, function ($order) {
                                                 <?php endif; ?>
                                                 <span><?php echo htmlspecialchars($item['name']); ?> x <?php echo $item['quantity']; ?></span>
                                                 <span class="ms-auto">₱<?php echo number_format($item['price_at_purchase'] * $item['quantity'], 2); ?></span>
+                                                <button class="add-to-cart-btn ms-2" title="Quick Add to Cart" data-product-id="<?php echo htmlspecialchars($item['product_id']); ?>">
+                                                    <i class="bi bi-cart-plus"></i>
+                                                </button>
                                             </li>
                                         <?php endforeach; ?>
                                     </ul>
@@ -248,6 +303,55 @@ $history_orders = array_filter($orders, function ($order) {
                 this.querySelector('i').classList.remove('bi-chevron-down');
                 this.querySelector('i').classList.add('bi-chevron-up');
             }
+        });
+    });
+
+    // Quick Add to Cart (for Transaction History items)
+    document.querySelectorAll('.history-details .add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const productId = this.dataset.productId;
+            const icon = this.querySelector('i');
+            icon.classList.remove('bi-cart-plus');
+            icon.classList.add('bi-arrow-repeat', 'spin');
+            fetch('api/cart/add_to_cart.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `product_id=${encodeURIComponent(productId)}&quantity=1`
+                })
+                .then(res => res.json())
+                .then(data => {
+                    icon.classList.remove('bi-arrow-repeat', 'spin');
+                    if (data.success) {
+                        icon.classList.add('bi-cart-check');
+                        btn.classList.add('btn-success');
+                        setTimeout(() => {
+                            icon.classList.remove('bi-cart-check');
+                            icon.classList.add('bi-cart-plus');
+                            btn.classList.remove('btn-success');
+                        }, 1200);
+                    } else {
+                        icon.classList.add('bi-exclamation-triangle');
+                        btn.classList.add('btn-danger');
+                        setTimeout(() => {
+                            icon.classList.remove('bi-exclamation-triangle');
+                            icon.classList.add('bi-cart-plus');
+                            btn.classList.remove('btn-danger');
+                        }, 1200);
+                    }
+                })
+                .catch(() => {
+                    icon.classList.remove('bi-arrow-repeat', 'spin');
+                    icon.classList.add('bi-exclamation-triangle');
+                    btn.classList.add('btn-danger');
+                    setTimeout(() => {
+                        icon.classList.remove('bi-exclamation-triangle');
+                        icon.classList.add('bi-cart-plus');
+                        btn.classList.remove('btn-danger');
+                    }, 1200);
+                });
         });
     });
 </script>

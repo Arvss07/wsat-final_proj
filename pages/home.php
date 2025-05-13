@@ -22,16 +22,13 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
 ?>
 
 <!-- Hero Section -->
-<section class="py-5 mb-4 bg-primary bg-gradient text-white rounded-4 shadow position-relative overflow-hidden" style="background: url('assets/img/hero-bg.jpg') center/cover no-repeat; min-height: 320px;">
+<section class="py-5 mb-4 rounded-4 position-relative overflow-hidden" style="min-height: 120px;">
     <div class="container position-relative z-2">
         <div class="row align-items-center">
             <div class="col-lg-7">
-                <h1 class="display-4 fw-bold mb-3"><i class="bi bi-bag-heart"></i> Welcome to Shoe Store!</h1>
+                <h1 class="display-4 fw-bold mb-3"><i class="bi bi-bag-heart"></i> Welcome to Leah's Shoe Store!</h1>
                 <p class="lead mb-4">Discover the latest arrivals, exclusive deals, and your favorite brands. Step up your style with our curated collection!</p>
                 <a href="#product-display-area" class="btn btn-light btn-lg fw-semibold shadow-sm"><i class="bi bi-shop"></i> Shop Now</a>
-            </div>
-            <div class="col-lg-5 d-none d-lg-block text-end">
-                <img src="assets/img/hero-shoes.png" alt="Trendy Shoes" class="img-fluid" style="max-height: 220px; filter: drop-shadow(0 0 2rem #0d6efd33);">
             </div>
         </div>
     </div>
