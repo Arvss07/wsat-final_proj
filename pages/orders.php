@@ -55,6 +55,19 @@ $history_orders = array_filter($orders, function ($order) {
     .order-details.active {
         display: table-row;
     }
+
+    .history-row {
+        cursor: pointer;
+    }
+
+    .history-details {
+        display: none;
+        background: #f8f9fa;
+    }
+
+    .history-details.active {
+        display: table-row;
+    }
 </style>
 <div class="container py-5">
     <h2 class="mb-4"><i class="bi bi-list-check"></i> My Orders</h2>
@@ -120,9 +133,10 @@ $history_orders = array_filter($orders, function ($order) {
     <?php endif; ?>
     <h4 class="mb-3"><i class="bi bi-clock-history"></i> Transaction History</h4>
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-striped align-middle">
             <thead>
                 <tr>
+                    <th></th>
                     <th>Date</th>
                     <th>Order #</th>
                     <th>Payment</th>
@@ -133,13 +147,60 @@ $history_orders = array_filter($orders, function ($order) {
             </thead>
             <tbody>
                 <?php foreach ($history_orders as $order): ?>
-                    <tr>
+                    <tr class="history-row" data-order-id="<?php echo htmlspecialchars($order['id']); ?>">
+                        <td><i class="bi bi-chevron-down"></i></td>
                         <td><?php echo htmlspecialchars($order['order_date']); ?></td>
                         <td><?php echo htmlspecialchars($order['id']); ?></td>
                         <td><?php echo htmlspecialchars($order['payment_method']); ?></td>
                         <td><?php echo htmlspecialchars($order['epayment_reference_id']); ?></td>
                         <td>₱<?php echo number_format($order['total_amount'], 2); ?></td>
                         <td><?php echo htmlspecialchars($order['status']); ?></td>
+                    </tr>
+                    <tr class="history-details" id="history-details-<?php echo htmlspecialchars($order['id']); ?>">
+                        <td colspan="7">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Items</h6>
+                                    <ul class="list-group mb-2">
+                                        <?php foreach ($order_items_map[$order['id']] ?? [] as $item): ?>
+                                            <li class="list-group-item d-flex align-items-center">
+                                                <?php
+                                                // Fetch product image (show first image if exists)
+                                                $img_path = null;
+                                                $img_sql = "SELECT image_path FROM product_images WHERE product_id = ? ORDER BY is_primary DESC, id ASC LIMIT 1";
+                                                $img_stmt = $conn->prepare($img_sql);
+                                                $img_stmt->bind_param('s', $item['product_id']);
+                                                $img_stmt->execute();
+                                                $img_stmt->bind_result($img_path);
+                                                $img_stmt->fetch();
+                                                $img_stmt->close();
+                                                ?>
+                                                <?php if ($img_path): ?>
+                                                    <img src="<?php echo htmlspecialchars($img_path); ?>" alt="Product Image" style="width:50px;height:50px;object-fit:cover;margin-right:10px;" class="img-thumbnail">
+                                                <?php else: ?>
+                                                    <img src="assets/img/oos.jpg" alt="No Image" style="width:50px;height:50px;object-fit:cover;margin-right:10px;" class="img-thumbnail">
+                                                <?php endif; ?>
+                                                <span><?php echo htmlspecialchars($item['name']); ?> x <?php echo $item['quantity']; ?></span>
+                                                <span class="ms-auto">₱<?php echo number_format($item['price_at_purchase'] * $item['quantity'], 2); ?></span>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Shipping Address</h6>
+                                    <div class="mb-2">
+                                        <?php echo htmlspecialchars($order['shipping_street'] . ', ' . $order['shipping_city'] . ', ' . $order['shipping_postal_code'] . ', ' . $order['shipping_country']); ?>
+                                    </div>
+                                    <h6>Payment</h6>
+                                    <div>Method: <?php echo htmlspecialchars($order['payment_method']); ?></div>
+                                    <?php if ($order['payment_method'] === 'E-Payment'): ?>
+                                        <div>Type: <?php echo htmlspecialchars($order['epayment_type']); ?></div>
+                                        <div>Reference: <span class="fw-bold text-primary"><?php echo htmlspecialchars($order['epayment_reference_id']); ?></span></div>
+                                    <?php endif; ?>
+                                    <div>Status: <span class="fw-bold"><?php echo htmlspecialchars($order['status']); ?></span></div>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -158,6 +219,28 @@ $history_orders = array_filter($orders, function ($order) {
             } else {
                 document.querySelectorAll('.order-details').forEach(r => r.classList.remove('active'));
                 document.querySelectorAll('.order-row i').forEach(i => {
+                    i.classList.remove('bi-chevron-up');
+                    i.classList.add('bi-chevron-down');
+                });
+                detailsRow.classList.add('active');
+                this.querySelector('i').classList.remove('bi-chevron-down');
+                this.querySelector('i').classList.add('bi-chevron-up');
+            }
+        });
+    });
+
+    // Transaction History row toggle
+    document.querySelectorAll('.history-row').forEach(row => {
+        row.addEventListener('click', function() {
+            const orderId = this.getAttribute('data-order-id');
+            const detailsRow = document.getElementById('history-details-' + orderId);
+            if (detailsRow.classList.contains('active')) {
+                detailsRow.classList.remove('active');
+                this.querySelector('i').classList.remove('bi-chevron-up');
+                this.querySelector('i').classList.add('bi-chevron-down');
+            } else {
+                document.querySelectorAll('.history-details').forEach(r => r.classList.remove('active'));
+                document.querySelectorAll('.history-row i').forEach(i => {
                     i.classList.remove('bi-chevron-up');
                     i.classList.add('bi-chevron-down');
                 });
