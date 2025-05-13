@@ -35,17 +35,26 @@ if ($orders) {
 }
 
 // Filter orders for My Orders and Transaction History
-$my_orders = array_filter($orders, function($order) {
+$my_orders = array_filter($orders, function ($order) {
     return in_array($order['status'], ['Pending', 'Processing', 'Shipped']);
 });
-$history_orders = array_filter($orders, function($order) {
+$history_orders = array_filter($orders, function ($order) {
     return in_array($order['status'], ['Delivered', 'Cancelled']);
 });
 ?>
 <style>
-.order-row { cursor: pointer; }
-.order-details { display: none; background: #f8f9fa; }
-.order-details.active { display: table-row; }
+    .order-row {
+        cursor: pointer;
+    }
+
+    .order-details {
+        display: none;
+        background: #f8f9fa;
+    }
+
+    .order-details.active {
+        display: table-row;
+    }
 </style>
 <div class="container py-5">
     <h2 class="mb-4"><i class="bi bi-list-check"></i> My Orders</h2>
@@ -108,51 +117,54 @@ $history_orders = array_filter($orders, function($order) {
                 </tbody>
             </table>
         </div>
-        <h4 class="mb-3"><i class="bi bi-clock-history"></i> Transaction History</h4>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Order #</th>
-                        <th>Payment</th>
-                        <th>Reference</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($history_orders as $order): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($order['order_date']); ?></td>
-                            <td><?php echo htmlspecialchars($order['id']); ?></td>
-                            <td><?php echo htmlspecialchars($order['payment_method']); ?></td>
-                            <td><?php echo htmlspecialchars($order['epayment_reference_id']); ?></td>
-                            <td>₱<?php echo number_format($order['total_amount'], 2); ?></td>
-                            <td><?php echo htmlspecialchars($order['status']); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
     <?php endif; ?>
+    <h4 class="mb-3"><i class="bi bi-clock-history"></i> Transaction History</h4>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Order #</th>
+                    <th>Payment</th>
+                    <th>Reference</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($history_orders as $order): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($order['order_date']); ?></td>
+                        <td><?php echo htmlspecialchars($order['id']); ?></td>
+                        <td><?php echo htmlspecialchars($order['payment_method']); ?></td>
+                        <td><?php echo htmlspecialchars($order['epayment_reference_id']); ?></td>
+                        <td>₱<?php echo number_format($order['total_amount'], 2); ?></td>
+                        <td><?php echo htmlspecialchars($order['status']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 <script>
-document.querySelectorAll('.order-row').forEach(row => {
-    row.addEventListener('click', function() {
-        const orderId = this.getAttribute('data-order-id');
-        const detailsRow = document.getElementById('details-' + orderId);
-        if (detailsRow.classList.contains('active')) {
-            detailsRow.classList.remove('active');
-            this.querySelector('i').classList.remove('bi-chevron-up');
-            this.querySelector('i').classList.add('bi-chevron-down');
-        } else {
-            document.querySelectorAll('.order-details').forEach(r => r.classList.remove('active'));
-            document.querySelectorAll('.order-row i').forEach(i => { i.classList.remove('bi-chevron-up'); i.classList.add('bi-chevron-down'); });
-            detailsRow.classList.add('active');
-            this.querySelector('i').classList.remove('bi-chevron-down');
-            this.querySelector('i').classList.add('bi-chevron-up');
-        }
+    document.querySelectorAll('.order-row').forEach(row => {
+        row.addEventListener('click', function() {
+            const orderId = this.getAttribute('data-order-id');
+            const detailsRow = document.getElementById('details-' + orderId);
+            if (detailsRow.classList.contains('active')) {
+                detailsRow.classList.remove('active');
+                this.querySelector('i').classList.remove('bi-chevron-up');
+                this.querySelector('i').classList.add('bi-chevron-down');
+            } else {
+                document.querySelectorAll('.order-details').forEach(r => r.classList.remove('active'));
+                document.querySelectorAll('.order-row i').forEach(i => {
+                    i.classList.remove('bi-chevron-up');
+                    i.classList.add('bi-chevron-down');
+                });
+                detailsRow.classList.add('active');
+                this.querySelector('i').classList.remove('bi-chevron-down');
+                this.querySelector('i').classList.add('bi-chevron-up');
+            }
+        });
     });
-});
-</script> 
+</script>

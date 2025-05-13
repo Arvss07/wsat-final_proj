@@ -27,17 +27,19 @@ $page_param_name = (!empty($page_param_name)) ? htmlspecialchars($page_param_nam
  * Helper function to generate a pagination link.
  * Ensures correct query string construction.
  */
-function generate_pagination_link_helper(string $base_url, string $param_name, int $page_number): string
-{
-    $url_parts = parse_url($base_url);
-    $query = $url_parts['query'] ?? '';
-    parse_str($query, $params);
-    $params[$param_name] = $page_number;
+if (!function_exists('generate_pagination_link_helper')) {
+    function generate_pagination_link_helper(string $base_url, string $param_name, int $page_number): string
+    {
+        $url_parts = parse_url($base_url);
+        $query = $url_parts['query'] ?? '';
+        parse_str($query, $params);
+        $params[$param_name] = $page_number;
 
-    $path = $url_parts['path'] ?? '';
-    $new_query_string = http_build_query($params);
+        $path = $url_parts['path'] ?? '';
+        $new_query_string = http_build_query($params);
 
-    return htmlspecialchars($path . '?' . $new_query_string);
+        return htmlspecialchars($path . '?' . $new_query_string);
+    }
 }
 
 ?>
