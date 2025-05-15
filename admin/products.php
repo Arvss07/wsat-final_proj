@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 echo "<tr>";
                                 echo "<td>" . htmlspecialchars($product['name']) . "</td>";
                                 echo "<td>" . htmlspecialchars($product['seller_name']) . "</td>";
-                                echo "<td>$" . htmlspecialchars(number_format((float)$product['price'], 2)) . "</td>";
+                                echo "<td>₱" . htmlspecialchars(number_format((float)$product['price'], 2)) . "</td>";
                                 echo "<td>" . htmlspecialchars($product['stock_quantity']) . "</td>";
                                 echo "<td>" . htmlspecialchars(date("M d, Y", strtotime($product['created_at']))) . "</td>";
                                 echo "<td>";
