@@ -18,7 +18,7 @@ if (file_exists(__DIR__ . '/../.env')) {
 $db_host = $_ENV['DB_HOST'] ?? 'localhost';
 $db_user = $_ENV['DB_USERNAME'] ?? 'root';
 $db_pass = $_ENV['DB_PASSWORD'] ?? '';
-$db_name = $_ENV['DB_DATABASE'] ?? 'wsat_finalP-2';
+$db_name = $_ENV['DB_DATABASE'] ?? 'wsat-finalproj-2';
 $db_port = $_ENV['DB_PORT'] ?? 3306;
 
 // TEMPORARY DATABASE CREDENTIALS (AIVEN)
