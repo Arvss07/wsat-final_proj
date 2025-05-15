@@ -1,167 +1,234 @@
--- Database: `wsat_finalP`
-CREATE DATABASE IF NOT EXISTS `wsat_finalP` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `wsat_finalP`;
+CREATE DATABASE  IF NOT EXISTS `wsat-finalproj-2`;
+USE `wsat-finalproj-2`;
 
+--
 -- Table structure for table `roles`
+--
+
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
-  `id` VARCHAR(36) PRIMARY KEY,
-  `name` VARCHAR(50) NOT NULL UNIQUE,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `roles` VALUES ('11111111-1111-1111-1111-111111111111','Admin','2025-05-07 01:54:25','2025-05-07 01:54:25'),('22222222-2222-2222-2222-222222222222','Seller','2025-05-07 01:54:25','2025-05-07 01:54:25'),('33333333-3333-3333-3333-333333333333','Shopper','2025-05-07 01:54:25','2025-05-07 01:54:25');
 
--- Dumping data for table `roles`
-INSERT INTO `roles` (`id`, `name`) VALUES
-('11111111-1111-1111-1111-111111111111', 'Admin'),
-('22222222-2222-2222-2222-222222222222', 'Seller'),
-('33333333-3333-3333-3333-333333333333', 'Shopper');
 
+--
 -- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `id` VARCHAR(36) PRIMARY KEY,
-  `role_id` VARCHAR(36) NOT NULL,
-  `name` VARCHAR(255) NOT NULL,
-  `email` VARCHAR(255) NOT NULL UNIQUE,
-  `password` VARCHAR(255) NOT NULL,
-  `profile_picture_path` VARCHAR(255) NULL,
-  `is_blocked` BOOLEAN NOT NULL DEFAULT FALSE,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `profile_picture_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_blocked` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `role_id` (`role_id`),
+  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table `users` (Initial Admin)
-INSERT INTO `users` (`id`, `role_id`, `name`, `email`, `password`, `is_blocked`) VALUES
-('44444444-4444-4444-4444-444444444444', '11111111-1111-1111-1111-111111111111', 'Administrator', 'admin@example.com', '$2y$10$B0dywf2LVWQ.kfeubmplZeUNdMTwhnI9wOpx5E654s3Dbra2FIb0O', FALSE),
-('55555555-5555-5555-5555-555555555555', '22222222-2222-2222-2222-222222222222', 'Seller User', 'seller@example.com', '$2y$10$B0dywf2LVWQ.kfeubmplZeUNdMTwhnI9wOpx5E654s3Dbra2FIb0O', FALSE),
-('66666666-6666-6666-6666-666666666666', '33333333-3333-3333-3333-333333333333', 'Shopper User', 'shopper@example.com', '$2y$10$B0dywf2LVWQ.kfeubmplZeUNdMTwhnI9wOpx5E654s3Dbra2FIb0O', FALSE);
+INSERT INTO `users` VALUES ('2237519d-ae19-4ee9-8e72-2bef252e7faf','33333333-3333-3333-3333-333333333333','Jeanoel Calosing','calosingjeanoel@gmail.com','$2y$10$XKa2JAHfbFBUIpFbDozUF.aSLL/2Dra.UpKx/R56U.RoiHCkDEQJa','uploads/profile_pictures/user_2237519d-ae19-4ee9-8e72-2bef252e7faf_1747061697.jpg',0,'2025-05-11 14:49:21','2025-05-12 15:01:47'),('44444444-4444-4444-4444-444444444444','11111111-1111-1111-1111-111111111111','Admin Arvy','admin@example.com','$2y$10$B0dywf2LVWQ.kfeubmplZeUNdMTwhnI9wOpx5E654s3Dbra2FIb0O',NULL,0,'2025-05-07 01:54:25','2025-05-07 04:11:58'),('68b6fe83-6b76-4d21-b928-0fccc2426911','22222222-2222-2222-2222-222222222222','Arvy Aggabao','hermitcraftonly07@gmail.com','$2y$10$/wljw84O69yKOMwbTi/d3euLIBk2mkPjDL.xCfVnvcehnkLhAVyK.',NULL,0,'2025-05-09 12:27:46','2025-05-09 12:27:46'),('6d5f3594-7e72-42b8-a119-d20481b4dbc4','22222222-2222-2222-2222-222222222222','Jean the Seller','1901691@usl.edu.ph','$2y$10$f1HsMfcD4YUOIU1OPR.Wz.BzjR8RnAKbXbOYJNd0gMt2dDR9oJgrO','uploads/profile_pictures/user_6d5f3594-7e72-42b8-a119-d20481b4dbc4_1747292986.jpg',0,'2025-05-08 15:42:39','2025-05-15 07:09:39'),('916ebb90-f9a2-4d0d-bcfc-0b1e69fa3f20','33333333-3333-3333-3333-333333333333','Shopper Admin','shopper@example.com','$2y$10$B0dywf2LVWQ.kfeubmplZeUNdMTwhnI9wOpx5E654s3Dbra2FIb0O','uploads/profile_pictures/user_916ebb90-f9a2-4d0d-bcfc-0b1e69fa3f20_1746709027.jpg',0,'2025-05-07 03:24:12','2025-05-08 12:57:07'),('98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','22222222-2222-2222-2222-222222222222','Leah Loraine G. Pascual','2201252@usl.edu.ph','$2y$10$Cfihdci12SscgBQPE8LyWu2jsQhHgo1G2NSoCniMGdKyplqegoKqK',NULL,0,'2025-05-12 13:36:05','2025-05-12 15:02:06'),('a622a98f-d12f-4e95-b6f6-295644b95092','22222222-2222-2222-2222-222222222222','Arbi the Seller','seller@example.com','$2y$10$lf6.LvhHgHU1.VGC6tfCf.WHKHhp9TRh9dJO6mJi1iqRPZNqwCdta','uploads/profile_pictures/user_a622a98f-d12f-4e95-b6f6-295644b95092_1746606344.png',0,'2025-05-07 02:31:57','2025-05-07 08:25:44'),('ccfd3c67-d599-47ac-b25f-aace68f67486','33333333-3333-3333-3333-333333333333','Arvy Aggabao','2500589@usl.edu.ph','$2y$10$P.lUF0YxkfE/MAggNStjkOS/oLwVtkeYQjMQb7Zl4zdwQpCXtbfXy','uploads/profile_pictures/user_ccfd3c67-d599-47ac-b25f-aace68f67486_1746699470.jpg',0,'2025-05-07 03:34:02','2025-05-15 06:07:32'),('f27b9d75-ba6e-43a2-9ab9-6d62392aa5a6','33333333-3333-3333-3333-333333333333','Leah Loraine G. Pascual','leahpascual0626@gmail.com','$2y$10$F3gNdSnM7aMeb2qj0E81D.kp6uBnZ4b9e62QD1eCq6FlGgr6Bo6yC',NULL,0,'2025-05-12 14:53:05','2025-05-12 14:53:05'),('fce285ee-a277-41d9-ad9c-9c0e3766953e','22222222-2222-2222-2222-222222222222','Dheeven the Seller','2102557@usl.edu.ph','$2y$10$ioOyAIJLxmlYkoNw61OyI.YbOwECZfsKeYfJcp.9zaiXuRUQDm.o.',NULL,0,'2025-05-08 15:41:23','2025-05-08 15:41:23');
 
 
--- Table structure for table `categories`
-CREATE TABLE `categories` (
-  `id` VARCHAR(36) PRIMARY KEY,
-  `name` VARCHAR(100) NOT NULL UNIQUE,
-  `description` TEXT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table `categories`
-INSERT INTO `categories` (`id`, `name`, `description`) VALUES
-('SHOE-CAT-UUID-001', 'Running Shoes', 'Shoes designed for running and jogging'),
-('SHOE-CAT-UUID-002', 'Basketball Shoes', 'High-top and low-top shoes for basketball'),
-('SHOE-CAT-UUID-003', 'Casual Sneakers', 'Comfortable sneakers for everyday wear'),
-('SHOE-CAT-UUID-004', 'Formal Shoes', 'Dress shoes for formal occasions'),
-('SHOE-CAT-UUID-005', 'Sandals & Flip-flops', 'Open footwear for warm weather'),
-('SHOE-CAT-UUID-006', 'Boots', 'Durable footwear for various conditions');
-
+--
 -- Table structure for table `products`
+--
+
+DROP TABLE IF EXISTS `products`;
 CREATE TABLE `products` (
-  `id` VARCHAR(36) PRIMARY KEY,
-  `seller_id` VARCHAR(36) NOT NULL,
-  `name` VARCHAR(255) NOT NULL,
-  `description` TEXT NOT NULL,
-  `price` DECIMAL(10, 2) NOT NULL,
-  `stock_quantity` INT UNSIGNED NOT NULL DEFAULT 0,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `seller_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `stock_quantity` int unsigned NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `seller_id` (`seller_id`),
+  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `products` VALUES ('01e83406-6481-4338-b5c8-c9b32dd74898','6d5f3594-7e72-42b8-a119-d20481b4dbc4','NEAJ 8 Men\'s Military Tactical Work Boots Side Zipper Leather Motorcycle Combat Boots Trooper','PROTECTION & CONVENIENCE: Ankle-high protection wraps & supports the ankles.YKK side zipper with hook-loop strap closure is easy to take on/off.\r\nDurable & breathable：\r\nBreathable fabric keeps your feet cool and dry. And high abrasion-resistant leather provides full protection. This combination structure offers maximum comfort and ensures breathable and long-term protection at the same time.',7999.00,50,'2025-05-14 18:22:19','2025-05-14 18:22:19'),('04db5b06-3a84-4854-b926-2be7c7e74fb1','6d5f3594-7e72-42b8-a119-d20481b4dbc4','ARVY Men\'s Handmade Leather Modern Classic Lace up Leather Lined Perforated Dress Oxfords Shoes','High quality genuine leather makes the shoes look stylish and suitable for any occasion.\r\nGood rubber soles can reduce the fatigue of walking for you.\r\nUpper Material: Leather, Lining Material: Leather\r\nusing the handmade coloring process that defines the philosophy and soul of our brand',2499.00,50,'2025-05-14 18:43:58','2025-05-14 18:43:58'),('05fb7eb6-85e5-4826-9414-aa8bccaeed3e','6d5f3594-7e72-42b8-a119-d20481b4dbc4','POGI Men\'s Formal Shoes','Classic lace up structure for a secure fit.\r\nThe Eternal Appearance of Men\'s Work Shoes.\r\nRubber sole.',2499.00,50,'2025-05-14 17:11:12','2025-05-14 17:57:14'),('0d686504-4c86-419b-b215-cb41696774b6','6d5f3594-7e72-42b8-a119-d20481b4dbc4','OMSIM Womens Slip On Sneakers Women Walking Tennis Shoes Lightweight Casual Sneakers for Gym Travel Work','Breathable and Lightweight: Our women\'s hiking shoes use durable knitted uppers, which are flexible, breathable, and light, keeping your feet fresh and comfortable all day long.\r\nSuitable Occasion: This is a shoe that can be worn all year round. Suitable for sports, jogging, cycling, hiking, gym, party, walking, running, indoor, sports, outdoor, travel, exercise, any occasion',3899.00,50,'2025-05-14 19:06:35','2025-05-14 19:06:35'),('16b0fb96-dd0a-44b4-a53d-032b67cce6ef','6d5f3594-7e72-42b8-a119-d20481b4dbc4','NEAJ Cowboy Boots For Men with Wide Square Toe Western Retro Boot','Durable & Stylish Design: The IUV Cowboy Boots feature a classic Western retro design with intricate embroidery, combining durability with timeless fashion for a rugged yet stylish look.\r\nComfortable Wide Square Toe: Designed with a wide square toe, these boots provide ample space for your feet, ensuring all-day comfort and reducing fatigue during long wear.\r\nSlip-Resistant Sole: Equipped with a slip-resistant outsole, these boots offer superior traction and stability, making them ideal for various terrains and activities.',6899.00,50,'2025-05-14 18:24:01','2025-05-14 18:24:01'),('2937a8d7-f246-47d7-a3f8-1b985f11c36e','6d5f3594-7e72-42b8-a119-d20481b4dbc4','DEBEN Indoor Cycling Shoes for Men Women Compatible with Peloton Bike Pre-Installed with Look Delta Cleats Outdoor Road Biking','This package includes specialized cycling shoes for women and men, along with Look Delta Cleats that are compatible with Peloton bike shoes. You won\'t need to purchase delta cleats separately.',5999.00,50,'2025-05-14 18:57:28','2025-05-14 18:57:28'),('2a558562-64b4-411f-af1f-43bff0221f9e','6d5f3594-7e72-42b8-a119-d20481b4dbc4','LEYANG Pear Ballet Flats','Textile upper of Womens Textile Round Toe Ballet Flats is breathe freely，soft and comfortable.\r\nlightweight TPR outsole injection molding with upper without glue，Ensure quality of Obtaom business casual Slip ons is stable.\r\nFoam Insode of Classic Fabric Working cute Shoes cool fit cushioning.\r\nFabric Dress Ballet Flats for women are perfect for walking or working, with a flexible outsole and soft footbed.\r\nRound toe and charming casual silhouette, classic Comfort Low-Heel Ballerina Flat.',4199.00,50,'2025-05-14 18:16:09','2025-05-14 18:16:09'),('34692632-cc48-41c9-a573-41e5daa156fc','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','Women\'s Slip on Walking Running Shoes Blade Tennis Casual Fashion Sneakers Comfort Non Slip Work Sport Athletic Trainer','Fabric typeMesh\r\nSole materialRubber\r\nOuter materialFabric\r\nClosure typePull-On',4899.00,87,'2025-05-12 15:30:22','2025-05-12 15:30:22'),('37ec6fea-27cf-4d45-ac40-8fa789de6845','6d5f3594-7e72-42b8-a119-d20481b4dbc4','NEAJ Timberland Men\'s White Ledge Mid Waterproof Hiking Boot','Upper made with waterproof Premium Timberland Leather\r\nFully gusseted tongue\r\nRustproof speed lace hardware with lace hooks at top\r\nReBOTL fabric lining\r\nEVA footbed and midsole',6999.00,50,'2025-05-14 18:26:16','2025-05-14 18:26:16'),('3a83e6b4-9984-4132-87e9-36640c859ebc','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','PIZZ ANNU Women\'s Wendy Low Wedge Sandals Ankle Strap Espadrille Open Toe Casual Summer Women Wedge Heels Shoes','Sole materialRubber\r\nOuter materialSuede\r\nClosure typeBuckle\r\nWater resistance level',2499.00,23,'2025-05-12 15:17:05','2025-05-12 15:17:05'),('3bb1481d-7ebb-4af2-96c5-82cc94a03011','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','LARNMERN Steel Toe Loafers Women Lightweight Comfortable Slip On Walking Casual Flats Sneakers Work Safety Shoes','Sole materialEthylene Vinyl Acetate\r\nOuter materialMesh\r\nClosure typePull-On\r\nWater resistance levelNot Water Resistant',2299.00,23,'2025-05-12 15:35:35','2025-05-12 15:35:35'),('3d432267-9bee-41cf-9119-2204b1200edb','6d5f3594-7e72-42b8-a119-d20481b4dbc4','NIKE Precision 7','Score at will at the rim or from deep in the Nike Precision 7. Crafted with a combination of ground control, comfort and on-court traction, it\'s perfect for instant impact plays when your name is called for the next pickup game. Check in and make the plays that swing the outcome in your favor.',1899.99,50,'2025-05-12 14:42:27','2025-05-14 17:11:27'),('4502bda1-905b-4428-8dcc-e14178e6aa5b','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','The Drop Women\'s Listilla Espadrille Wedge Sandal','Fabric typeUpper: 100% Polyurethane; Lining: 100% Polyurethane; Outer Sole: 100% TPR\r\nCare instructionsHand Wash Only\r\nOriginImported',1200.00,10,'2025-05-12 15:14:29','2025-05-12 15:14:29'),('46f30172-9e79-42f1-8622-fdb416008baa','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','Nattork Kids Roller Skates for Boys Girls Kids, 4 Sizes Adjustable Quad Skates with All Light up Wheels - Birthday Gift for Indoor Outdoor Sports','Size	Medium(1-4)\r\nColor	Blue\r\nBrand	Nattork\r\nWheel Material	Polyurethane\r\nWheel Type	Roller Skates\r\nSole Material	Nylon\r\nClosure Type	Buckle\r\nWheel Size	58 Millimeters\r\nMaterial	Plastic\r\nItem Weight	2 Kilograms',3799.00,34,'2025-05-12 15:28:15','2025-05-12 15:28:15'),('496eac39-9b9e-455d-bc3f-8be1c8250799','6d5f3594-7e72-42b8-a119-d20481b4dbc4','LEAH Men\'s Basketball Shoes Breathable Non-Slip Sneakers Fashionable Sports','Superior Breathability: These basketball shoes are engineered with cutting-edge materials that promote optimal airflow, ensuring your feet stay cool and comfortable during intense games or workouts.\r\nEnhanced Grip: The outsole of these basketball shoes features a specialized slip-resistant pattern that delivers exceptional traction on a variety of indoor and outdoor surfaces.',5999.00,50,'2025-05-14 18:51:18','2025-05-14 18:51:18'),('4ba16fa9-f6c0-44ba-aecd-696be16984a5','6d5f3594-7e72-42b8-a119-d20481b4dbc4','XX1 Men\'s Soccer Mundial Goal Shoes','Split-suede leather upper\r\nSynthetic lining for comfort\r\nNON MARKING gum rubber outsole for excellent grip on all indoor surfaces',4299.00,50,'2025-05-14 17:56:56','2025-05-14 17:56:56'),('4beda0a9-b0b1-4df8-b36c-61ac63b9ddb1','6d5f3594-7e72-42b8-a119-d20481b4dbc4','JEAN Men\'s Dress Loafers Slip On Casual Driving Loafer','Sleek uppers feature a slip-on design with a metal bit detail\r\nClassic moccasin toe with a hand-sewn construction ensures long-lasting wear\r\nBreathable leather/fabric lining and lightly cushioned latex leather-covered footbed\r\nModest heel with a flexible and durable PVC outsole for added support and stability\r\nEasy slip-on construction business casual loafer and style for any occasion in mind',2899.00,50,'2025-05-14 18:47:39','2025-05-14 18:47:39'),('4c5457ac-ef08-4786-aee6-ef9d6615eaae','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','Dumalum Women\'s Suede Clog Leather Mules Arch Support Potato Shoes with Comfort Cork Footbed - Clogs for Women Men Unisex Antislip Slippers Sandals','Sole materialCork\r\nOuter materialSuede Leather\r\nClosure typeBuckle',2899.00,87,'2025-05-12 15:20:10','2025-05-12 15:20:10'),('4f624b2d-d6df-468f-96e5-49386dbba256','6d5f3594-7e72-42b8-a119-d20481b4dbc4','LEYANG Women\'s Black Ballet Flats with Bow - Comfortable & Lightweight Shoes','Classic ballet flats with a delicate bow detail, available in white, pink, blue and black satin finishes. Perfect for weddings, office wear, or casual outings – effortlessly complements any outfit!',2199.00,50,'2025-05-14 18:10:32','2025-05-14 18:17:08'),('52a2bf06-4a70-4e16-9493-1eee3753bea1','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','TOMS Women\'s Classic Espadrille Wedge Sandal','Product details\r\nFabric type100% Synthetic\r\nOriginImported\r\nSole materialMan Made\r\nPlatform height0.5 inches inches inches',2000.00,60,'2025-05-12 15:15:33','2025-05-12 15:15:33'),('53e15a12-b404-4421-9eea-cf8c738527c6','a622a98f-d12f-4e95-b6f6-295644b95092','Nike','Nike for Men',4899.00,12,'2025-05-08 15:37:03','2025-05-08 15:37:03'),('5749f3fb-365b-4ceb-a088-80025be2ca5f','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','LARNMERN Slip On Steel Toe Shoes Men Lightweight Comfortable Lounging Walking Sneakers Steel Toe Loafers','Fabric typeMesh\r\nOriginImported\r\nSole materialEthylene Vinyl Acetate\r\nOuter materialMesh',2455.00,36,'2025-05-12 15:36:17','2025-05-12 15:36:17'),('5bb3772e-f9fc-43f6-81e0-2458fb03da44','6d5f3594-7e72-42b8-a119-d20481b4dbc4','OMSIM Men Sneakers Fashion Sport Running Athletic Tennis Walking Shoes','SOLE:TPU sole is durable and flexible, it can free bending with you for increased comfort\r\nINSOLE:The honeycomb cushioned soft insole for shock absorption and cushioning.\r\nUPPER MATERIAL:The hexagonal mesh textile has excellent air permeability that will keep your feet away from the wet condition, creating a cooler, drier and healthier shoe environment for you.\r\nSHOELACE:Soft mesh hug your foot for dynamic support,loosening and tightening with your feet natural motion.',4199.00,50,'2025-05-14 19:07:23','2025-05-15 08:20:23'),('5ccff7f1-c26b-4b99-8554-fb41de95b379','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','Nattork Kids Roller Skates for Girls Boys Kids, 4 Sizes Adjustable Quad Skates Butterfly and Flower with All Light up Wheels - Birthday Gift for Indoor Outdoor Sports','Size	Small(10C-13C)\r\nColor	Teal\r\nBrand	Nattork\r\nWheel Material	Polyurethane\r\nWheel Type	Roller skates wheel\r\nSole Material	Ethylene Vinyl Acetate\r\nClosure Type	Buckle',5000.00,34,'2025-05-12 15:27:13','2025-05-12 15:27:13'),('5e73696b-1770-4230-b565-ac98702da87f','6d5f3594-7e72-42b8-a119-d20481b4dbc4','JEAN Women\'s Loafers, Lug Sole Slip On Platform Chunky Penny Loafers for Women Dressy and Work','Stylish & Sophisticated: These womens loafers have a lug sole design that effortlessly combines coolness with sophistication, adding height to your frame and enhancing the shape of your feet.\r\nEasy To Wear & Clean: The slip-on design offers ease of wear, while the PU upper provides a sleek and modern look that is effortless to clean, ensuring you always look your best.',2999.00,50,'2025-05-14 18:49:29','2025-05-14 18:49:29'),('623327a0-307c-4db4-9e3c-34c1c66c2c62','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','YALOX Water Shoes Women\'s Men\'s Outdoor Beach Swimming Aqua Socks Quick-Dry Barefoot Shoes Surfing Yoga Pool Exercise','Fabric type92% Polyester, 8% Spandex\r\nSole materialRubber\r\nOuter materialRubber\r\nClosure typePull-On',1433.00,23,'2025-05-12 15:32:29','2025-05-12 15:32:29'),('6484db29-7d85-4029-9d3f-1970b2ab2f7a','6d5f3594-7e72-42b8-a119-d20481b4dbc4','DEBEN Mens Womens Cycling Shoes Compatible with Peloton Road Bike Riding Bicycle Pre-Installed Delta Cleats','This cycling shoes are compatible with both Look Delta systems and SPD systems.Notice: Please check if the delta cleats fit your bike pedal,The cleats in our gift package are only suitable for Look Delta systems.',5699.00,50,'2025-05-14 18:55:56','2025-05-14 18:55:56'),('6aecee46-0250-4b5d-96f4-9a784d7ea37c','6d5f3594-7e72-42b8-a119-d20481b4dbc4','LEYANG Women\'s May Ballet Flat','Sam Edelman May\r\nThe May flats have a pointed toe and a basketweave construction for all-day comfort even in climbing temps.\r\nHeel Height: 0.375 Inches\r\nClosure: Slip-On',2499.00,50,'2025-05-14 18:08:22','2025-05-14 18:08:22'),('7752cc1a-9be4-40e2-95c1-1d6bc3d423ad','6d5f3594-7e72-42b8-a119-d20481b4dbc4','ARVY Men\'s Dress Shoes Casual Oxford Shoes Business Formal Shoes','Men\'s Wingtip Lace-Up Dress Shoes Leather Classic Formal Oxfords for mens\r\nFlexible rubber sole can provide great cushion and reduce the foot fatigue\r\nThe rubber outsole not only with better elasticity, but also wear resistant\r\nLightweight construction with extended durability with breathable linings\r\nComfortable and Soft lining and insole keep your feet odor free and dry everyday',2799.00,50,'2025-05-14 18:40:57','2025-05-14 18:40:57'),('7a277476-e8a9-43a9-8880-8719be7006a4','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','Men\'s and Women\'s Shark Slides Gradient Color Sandals, Spring and Summer Indoor and Outdoor Non-slip Slippers, Thickened Sole, Suitable For Home, Beach, Pool','Product details\r\nSole material\r\nEthylene Vinyl Acetate\r\nClosure type\r\nBackstrap',1500.00,9,'2025-05-12 14:47:43','2025-05-15 05:41:29'),('7fcac354-cb5e-4ff2-aab5-4b7ee85ec390','6d5f3594-7e72-42b8-a119-d20481b4dbc4','NEAJ La Sportiva Mens Tarantulace Rock Climbing Shoes','Ideal for the climber looking for a single pair of shoes to do it all; a jack-of-all-trades climbing shoe comfortable enough for all-day outdoor climbing or a trip to the gym.\r\nFit & Sizing - Shoe runs BIG. Size Down 1 Full Size from street shoe size. Designed with rounded forefoot and higher volume to comfortably fit more climbers.',3999.00,50,'2025-05-14 18:30:57','2025-05-14 18:30:57'),('85f579a7-9253-40c4-bab5-6c2bec252c5e','6d5f3594-7e72-42b8-a119-d20481b4dbc4','ARVY Men Sport Athletic Running Sneakers Walking Shoes','Fashion lace up design.\r\nVamp material:Mesh fabric,breatheble and lightweight,very comfortable.\r\nThe interior of the shoe is designed with a honeycomb hole to absorb sweat and deodorize, allowing your feet to breathe freely.\r\nTPU soles possess strong traction and and stability even on slipping ground, so you can easily walking and running.',6799.00,50,'2025-05-14 19:00:01','2025-05-14 19:00:01'),('8c43db74-62e6-401e-b040-6c49bb8bf0e0','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','FITORY Womens Open Toe Slipper with Cozy Lining,Faux Rabbit Fur Cork Slide Sandals','Size 6-11\r\nProduct details\r\nSole material\r\nEthylene Vinyl Acetate\r\nOuter material\r\nFur\r\nClosure type\r\nBuckle',800.00,50,'2025-05-12 14:49:26','2025-05-12 14:49:26'),('8efa3c85-c5a2-42e8-a235-6d78ab277762','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','Jakcuz Plus Size Men\'s Lightweight Walking Shoes Mesh Fish Scale Pattern Fashion Sneakers','Product details\r\nSole materialEthylene Vinyl Acetate\r\nOuter materialMesh\r\nClosure typePull-On\r\nWater resistance levelNot Water Resistant',3999.00,45,'2025-05-12 15:22:51','2025-05-12 15:22:51'),('972a639e-220e-4260-a15b-2f29e90d8c22','68b6fe83-6b76-4d21-b928-0fccc2426911','Crocs','Crocs White\r\n\r\nNew Arrival! New Arrival! New Arrival!',2780.00,99,'2025-05-09 12:36:18','2025-05-09 13:35:48'),('9a4102d3-088b-4ce5-83de-b07b0c3d641b','6d5f3594-7e72-42b8-a119-d20481b4dbc4','NEAJ Men\'s Momentum Climbing Shoes','The half-sole construction increases broad movement abilities and sensitivity while reducing waste when resoling is needed\r\nNew heel construction enhances heel hook performance with increased rubber coverage',3699.00,50,'2025-05-14 18:28:31','2025-05-14 18:28:31'),('9ba4dde8-f10e-4a7a-9363-c419065d5e4a','6d5f3594-7e72-42b8-a119-d20481b4dbc4','DHEEV Men\'s Black Ballroom Latin Performance Shoes Waltz Modern Dancing Practice Shoe','COMFORTABLE AND LIGHTWEIGHT: Made of high quality Leather upper with with thick durable suede outsole, flexible and comfortable.Black dance loafer easy to style with work outfits, casual jeans, shirts or pants.',2099.00,50,'2025-05-14 18:35:06','2025-05-14 18:35:06'),('a01d900a-1ab2-49c6-9b16-7036ed87b522','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','Roller Skate Shoes for Kids Girls Boys Detachable Wheeled Fashion Sneakers','OriginImported\r\nFur descriptionA pair of Roller Skate Shoes come quipped with 4 * double removable wheels, 4 * black cover plate and a tool.\r\nSole materialTPR Sole\r\nOuter materialFaux Leather',4500.00,56,'2025-05-12 15:26:27','2025-05-12 15:26:27'),('a0509153-ed09-433a-a977-3c40a8121017','6d5f3594-7e72-42b8-a119-d20481b4dbc4','ARVY Men\'s Dress Shoes Oxford Shoes Formal Dress Shoes for Men Business Derby Shoes','These dress shoes feature a timeless and versatile cap toe oxford design made with premium materials for durability and a sleek appearance.\r\nThey are designed for all-day comfort, with a soft lining and insole that keep feet dry and odor-free, especially useful for those who wear dress shoes for extended periods of time.',3599.00,50,'2025-05-14 18:42:07','2025-05-14 18:42:07'),('a826f8fe-373c-4346-a9f6-51d5c4386d6b','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','Ablanczoom Womens Sneakers Walking Shoes: Comfortable Breathable Cushion Athletic Running Tennis Shoes for Workout Gym Training','Sole materialEthylene Vinyl Acetate\r\nOuter materialMesh\r\nClosure typeLace-Up',2399.00,24,'2025-05-12 15:29:33','2025-05-12 15:29:33'),('b7132b50-7d41-4eb5-bbbc-0120e99859f7','6d5f3594-7e72-42b8-a119-d20481b4dbc4','OMSIM Women\'s Slip on Walking Running Shoes Blade Tennis Casual Fashion Sneakers Comfort Non Slip','Elastic and breathable mesh upper, excellent softness and flexibility, to ensure that your feet fit tightly and feel more free, allowing you to move in your own way, and enjoy the unparalleled fun of free running.',3899.00,50,'2025-05-14 19:05:37','2025-05-14 19:05:37'),('b8a92000-ba71-400c-ac85-2c8e3f735b95','6d5f3594-7e72-42b8-a119-d20481b4dbc4','LEAH Men\'s Basketball Shoes Black/White','The upper seems to float above the tooling and is held together by the midfoot strap to create a sort of hovering icon. The strap provides midfoot support and locks your foot in with minimum weight added to the shoe.\r\nA Zoom Air unit in the forefoot delivers a springy, responsive sensation.\r\nMaterials in the collar add a plush feel while the durable material by the toe is built for support and performance.',4899.00,50,'2025-05-14 18:52:31','2025-05-14 18:52:31'),('c01c2767-da25-40da-a105-1ed236371e2f','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','KIDMI Women\'s Suede Clogs Leather Mules Cork Footbed Sandals Potato Shoes with Arch Support','Product details\r\nFabric typeLeather,Cork,Suede\r\nOriginAccording to the buyers\' suggestions, we adjusted the size chart. Please select the size according to the available size chart.\r\nSole materialEthylene Vinyl Acetate\r\nOuter materialPremium Suede Leather',3299.00,126,'2025-05-12 15:19:16','2025-05-12 15:19:16'),('c87ceb20-7ffc-49a7-8134-a716373d5d2e','68b6fe83-6b76-4d21-b928-0fccc2426911','Sandals','A Good Pair of Sandals',5800.00,12,'2025-05-09 12:34:40','2025-05-12 14:53:45'),('d031e86d-5707-46ce-a09d-b4a641a7f2f7','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','CUSHIONAIRE Men\'s Lane Cork Footbed Sandal with +Comfort, Arch Support, Adjustable Straps - Comfortable Slide Sandals for Walking, Casual Summer Footwear','Sole materialEthylene Vinyl Acetate\r\nOuter materialFaux Leather\r\nClosure typeBuckle\r\nWater resistance levelWaterproof',899.00,78,'2025-05-12 15:34:13','2025-05-12 15:34:13'),('d59ececd-1239-489f-95f8-916de4f98404','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','GSLMOLN Men\'s Slip on Breathable Walking Shoes Ultra Lightweight Casual Sport Gym Fashion Sneakers','Fabric typeMesh\r\nOriginImported\r\nSole materialEthylene Vinyl Acetate\r\nOuter materialMesh',4599.00,94,'2025-05-12 15:21:42','2025-05-12 15:21:42'),('d919c8ff-cf37-4513-942e-e96746c0c6ad','6d5f3594-7e72-42b8-a119-d20481b4dbc4','ARVY Running Shoes for Men Slip On Walking Shoes','Lightweight & Breathable: These men\'s running shoes are crafted with lightweight and breathable mesh fabric, ensuring your feet stay cool and fresh even during intense activities. Perfect for long hours of wear, these sneakers won\'t feel heavy after a tiring day',5999.00,50,'2025-05-14 19:01:07','2025-05-14 19:01:07'),('dd619033-f54b-4d60-b573-c82e8479b79b','6d5f3594-7e72-42b8-a119-d20481b4dbc4','JEAN Loafers for Women Platform Chunky Loafers Slip On Casual Shoes','Sweet & Timeless: Crafted with a finely stitched toe and adorned with a statement horse-bit detail, these loafers for women blend charm and sophistication.\r\nTrendy Chunky Sole: Stand tall with these chunky loafers for women. Set on a 2.17-inch heel and 0.83-inch platform, these platform loafers for women feature a lug outsole that adds a fashion-forward edge.',3699.00,50,'2025-05-14 18:46:18','2025-05-14 18:46:18'),('dfc89bc6-45d4-4db3-804d-0c72c8eb02ac','6d5f3594-7e72-42b8-a119-d20481b4dbc4','KYUT Unisex Adult Goletto VIII Turf Goal Shoe','Turf soccer shoes for comfort and grip\r\nSOCCER SIZING: Unisex product is men\'s sizing. Women should size down 1 to 1.5 sizes\r\nSYNTHETIC UPPER: Synthetic upper is comfortable and lightweight\r\nTEXTILE LINING: Textile lining provides a soft, comfortable feel\r\nTURF SOCCER OUTSOLE: Rule the field with a lugged rubber outsole specially designed for artificial turf surfaces',2799.00,50,'2025-05-14 18:01:37','2025-05-14 18:01:37'),('e1a40b79-8385-4fb7-aa64-c2d1fb0345b2','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','ATHMILE Water Shoes for Men Women River Shoes Adult Swim Beach Lake Pool Aqua Socks Barefoot Quick Dry for Hiking Surfing Kayaking Cruise Ship Essentials','Fabric typeRubber,Mesh\r\nSole materialRubber\r\nOuter materialMesh\r\nClosure typeLace-Up',1200.00,45,'2025-05-12 15:31:35','2025-05-12 15:31:35'),('e2bc46aa-e6cc-4be7-b49c-24a23d191ff3','6d5f3594-7e72-42b8-a119-d20481b4dbc4','LICALUS Men\'s Lace-up Shoes Formal Shoes For Men','Good leather lining and lightly padded latex footbed for all day comfort\r\nRubber Sole.\r\nFlexible and Comfort oxfords.\r\nClassic lace-up closure offers secure and adjustable fit.\r\nClassic formal shoes suitable for business, office, wedding, and party.',899.00,50,'2025-05-14 17:20:32','2025-05-14 17:20:32'),('e75b7902-798f-4f65-8b41-ec75673dc78c','6d5f3594-7e72-42b8-a119-d20481b4dbc4','NEAJ Professional All-Around Mens Womens Climbing Shoes for Gym and Sport Climbing','Exceptional Traction: Our men\'s climbing shoes feature a specialized rubber outsole that offers outstanding grip on various rock surfaces. Whether it\'s smooth granite or rough limestone, you can trust these shoes to keep you firmly planted.',3599.00,50,'2025-05-14 18:29:38','2025-05-14 18:29:38'),('f1acfa7f-32c8-432e-a7aa-831d7c40ef49','6d5f3594-7e72-42b8-a119-d20481b4dbc4','DEBEN Mens Womens Cycling Shoes Compatible with Peloton Indoor Bicycle Pedals Clip in Road Bike Shoes Pre-Installed with Look Delta Cleats','This package includes a pair of specialized women\'s and men\'s cycling shoes, as well as a pair of Look Delta Cleats that are compatible with Peloton bike shoes. This means you won\'t have to pay extra for a pair of delta cleats.',7299.00,500,'2025-05-14 18:54:15','2025-05-14 18:54:15'),('f91d9ea8-0595-4678-8f0b-5bc7c166d202','6d5f3594-7e72-42b8-a119-d20481b4dbc4','DHEEV Women\'s Leather Upper Slip-on Jazz Shoe','Leather Upper and Neoprene stretch arch insert\r\nSplit EVA sole for flexibility\r\n0.4\'\' Flat Heel for traction and stability\r\nFabric lining and Neoprene stretch arch insert for both comfort and support',1899.00,50,'2025-05-14 18:32:43','2025-05-14 18:32:43'),('f96f5ec3-e50c-43b8-9e60-5714eb823785','6d5f3594-7e72-42b8-a119-d20481b4dbc4','DHEEV Half Soles Dance Shoes Lyrical Pirouette Ballet Shoes Turners Dance Shoes for Contemporary','Breathable Stretch Canvas, Leather Suede Sole.\r\nHalf sole design with covered toes. Wearable for hours, perfect for spinning. Half-soled shoes help dancers turn more freely than full-soled shoes.\r\nSilicone backing on elastic strap to prevent strap from slipping while dancing.A perfect gift for dancing men or women.',1099.00,50,'2025-05-14 18:36:21','2025-05-14 18:36:21'),('fa6e3216-b517-4eb0-b505-aa7c6431c14b','6d5f3594-7e72-42b8-a119-d20481b4dbc4','COL HAAN Men\'s Lenox Hill Cap Toe Oxford','Leather upper with high-shine finish\r\nSlip-on construction with elastic inserts\r\nFull leather lining\r\nMini stacked heel\r\nSynthetic and rubber sole',3999.00,50,'2025-05-14 17:22:25','2025-05-14 17:22:25'),('fa6f6222-62af-4fd6-8755-cb605b384a4a','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','Capybara Cartoon Slippers Sandals Women Non Slip - Outdoor & Indoor Footwear For Beach Travel Shower Flip Flops Women','Product details\r\nSole material\r\nRubber\r\nOuter material\r\nRubber\r\nClosure type\r\nSlip On\r\nWater resistance level\r\nWater Resistant',560.00,27,'2025-05-12 14:50:20','2025-05-12 14:56:27'),('fe2b4d71-cbee-4ec8-9df5-400c3fef6ab5','6d5f3594-7e72-42b8-a119-d20481b4dbc4','ARVY Men\'s Supportive Running Shoes Cushioned Athletic Sneakers','Slightly structured engineered knit upper\r\nFeatures a padded collar and lace up closure for a custom fit\r\nThe special patch on the upper prevents the laces from tearing\r\nDurable density foam midsole provides lightweight response and lasting durability.Rubber outsole help provide reliable traction\r\nLevel platform design features a lower heel-to-toe drop for a more natural running position',6299.00,50,'2025-05-14 19:02:20','2025-05-14 19:02:20');
 
--- Table structure for table `product_images`
-CREATE TABLE `product_images` (
-  `id` VARCHAR(36) PRIMARY KEY,
-  `product_id` VARCHAR(36) NOT NULL,
-  `image_path` VARCHAR(255) NOT NULL,
-  `is_primary` BOOLEAN NOT NULL DEFAULT FALSE,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Table structure for table `product_categories` (Link Table)
-CREATE TABLE `product_categories` (
-  `product_id` VARCHAR(36) NOT NULL,
-  `category_id` VARCHAR(36) NOT NULL,
-  PRIMARY KEY (`product_id`, `category_id`),
-  FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+--
 -- Table structure for table `addresses`
+--
+
+DROP TABLE IF EXISTS `addresses`;
 CREATE TABLE `addresses` (
-  `id` VARCHAR(36) PRIMARY KEY,
-  `user_id` VARCHAR(36) NOT NULL,
-  `street` VARCHAR(255) NOT NULL,
-  `barangay` VARCHAR(100) NOT NULL,
-  `city` VARCHAR(100) NOT NULL,
-  `province` VARCHAR(100) NOT NULL,
-  `country` VARCHAR(100) NOT NULL,
-  `postal_code` VARCHAR(20) NOT NULL,
-  `is_default` BOOLEAN NOT NULL DEFAULT FALSE,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `street` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `barangay` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `city` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `province` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `postal_code` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_default` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `addresses_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `addresses` VALUES ('3aaca895-d08f-4b97-a421-bc27a9f515e7','a622a98f-d12f-4e95-b6f6-295644b95092','Arellano Ext','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500',1,'2025-05-08 15:05:13','2025-05-12 13:20:32'),('3d443861-0a9e-4e48-b75a-01f3c47cbbc1','2237519d-ae19-4ee9-8e72-2bef252e7faf','Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500',1,'2025-05-11 15:21:45','2025-05-11 15:21:45'),('878e7fbe-2755-41b1-8ee1-08f3db521b5f','f27b9d75-ba6e-43a2-9ab9-6d62392aa5a6','Purok 5','Siempre Viva Sur','Mallig','Isabela','philippines','3323',0,'2025-05-12 14:54:32','2025-05-12 14:54:32'),('9a5927d4-d5c3-40fa-8ec6-9033721ff840','98fdc6da-7f0c-425a-a293-8f06cf2b3b5d','Purok 5','Siempre Viva Sur','Mallig','Isabela','philippines','3323',1,'2025-05-12 14:51:28','2025-05-12 14:51:28'),('b7febe5b-04a6-450a-b986-96d0e668d248','6d5f3594-7e72-42b8-a119-d20481b4dbc4','Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500',1,'2025-05-15 07:09:09','2025-05-15 07:09:09'),('dbf0ee98-325e-4cd4-8243-358b8f0a8218','68b6fe83-6b76-4d21-b928-0fccc2426911','St1','Whispering Woods','Ci1','pr1','Philippines','12345',1,'2025-05-09 13:23:06','2025-05-09 13:23:06'),('e89e2e34-cf42-417a-a761-b3fa85acbc3d','ccfd3c67-d599-47ac-b25f-aace68f67486','Arellano Ext','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500',1,'2025-05-08 10:38:44','2025-05-08 10:40:30'),('efac6e46-6593-435e-8553-ade818073d75','ccfd3c67-d599-47ac-b25f-aace68f67486','Haha','Hehe','Hihi','Hoho','Huhu','00001',0,'2025-05-08 10:40:09','2025-05-08 15:15:11');
 
--- Table structure for table `orders`
-CREATE TABLE `orders` (
-  `id` VARCHAR(36) PRIMARY KEY,
-  `user_id` VARCHAR(36) NULL, -- Can be NULL if user is deleted
-  `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `status` ENUM('Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled') NOT NULL DEFAULT 'Pending',
-  `total_amount` DECIMAL(10, 2) NOT NULL,
-  `shipping_street` VARCHAR(255) NOT NULL,
-  `shipping_barangay` VARCHAR(100) NOT NULL,
-  `shipping_city` VARCHAR(100) NOT NULL,
-  `shipping_province` VARCHAR(100) NOT NULL,
-  `shipping_country` VARCHAR(100) NOT NULL,
-  `shipping_postal_code` VARCHAR(20) NOT NULL,
-  `payment_method` ENUM('Cash on Delivery', 'E-Payment') NOT NULL,
-  `payment_status` ENUM('Pending', 'Paid', 'Failed') NOT NULL DEFAULT 'Pending',
-  `epayment_type` VARCHAR(50) NULL, -- e.g., 'GCash', 'Maya', NULL if not E-Payment
-  `epayment_reference_id` VARCHAR(255) NULL,
-  `epayment_details` TEXT NULL, -- e.g., Sender Name, Notes
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Table structure for table `order_items`
-CREATE TABLE `order_items` (
-  `id` VARCHAR(36) PRIMARY KEY,
-  `order_id` VARCHAR(36) NOT NULL,
-  `product_id` VARCHAR(36) NOT NULL,
-  `quantity` INT UNSIGNED NOT NULL,
-  `price_at_purchase` DECIMAL(10, 2) NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+--
 -- Table structure for table `cart_items`
-CREATE TABLE `cart_items` (
-  `id` VARCHAR(36) PRIMARY KEY,
-  `user_id` VARCHAR(36) NOT NULL,
-  `product_id` VARCHAR(36) NOT NULL,
-  `quantity` INT UNSIGNED NOT NULL,
-  `added_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+--
 
--- Table structure for table `password_resets`
-CREATE TABLE `password_resets` (
-  `id` VARCHAR(36) PRIMARY KEY,
-  `user_id` VARCHAR(36) NOT NULL,
-  `email` VARCHAR(255) NOT NULL,
-  `token` VARCHAR(255) NOT NULL UNIQUE,
-  `expires_at` TIMESTAMP NOT NULL,
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  INDEX `idx_email_password_resets` (`email`),
-  INDEX `idx_token_password_resets` (`token`)
+DROP TABLE IF EXISTS `cart_items`;
+CREATE TABLE `cart_items` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `quantity` int unsigned NOT NULL,
+  `added_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `cart_items` VALUES ('17e46a05-9c00-4db0-9790-22490f400c9f','a622a98f-d12f-4e95-b6f6-295644b95092','3d432267-9bee-41cf-9119-2204b1200edb',1,'2025-05-12 14:44:30','2025-05-12 14:44:30');
+
+
+--
+-- Table structure for table `categories`
+--
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE `categories` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `categories` VALUES ('SHOE-CAT-UUID-001','Running Shoes','Shoes designed for running and jogging','2025-05-07 04:59:08','2025-05-07 04:59:08'),('SHOE-CAT-UUID-002','Basketball Shoes','High-top and low-top shoes for basketball','2025-05-07 04:59:08','2025-05-07 04:59:08'),('SHOE-CAT-UUID-003','Casual Sneakers','Comfortable sneakers for everyday wear','2025-05-07 04:59:08','2025-05-07 04:59:08'),('SHOE-CAT-UUID-004','Formal Shoes','Dress shoes for formal occasions','2025-05-07 04:59:08','2025-05-07 04:59:08'),('SHOE-CAT-UUID-005','Sandals & Flip-flops','Open footwear for warm weather','2025-05-07 04:59:08','2025-05-07 04:59:08'),('SHOE-CAT-UUID-006','Boots','Durable footwear for various conditions','2025-05-07 04:59:08','2025-05-07 04:59:08'),('SHOE-CAT-UUID-007','Athletic Shoes (Other)','Sports footwear designed for activities other than basketball and running.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-008','Outdoor Shoes','Footwear built for hiking, trekking, and other outdoor adventures.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-009','Skate Shoes','Durable and supportive shoes designed for skateboarding.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-010','Dress Casual Shoes','Comfortable yet stylish shoes suitable for smart-casual occasions.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-011','Work & Safety Shoes','Protective footwear designed for occupational safety.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-012','Dance Shoes','Specialized footwear for various forms of dance.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-013','Golf Shoes','Footwear designed to provide grip and stability during golf.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-014','Climbing Shoes','Specialized shoes for rock climbing with high grip.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-015','Cycling Shoes','Rigid-soled shoes that clip into bike pedals.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-016','Tennis Shoes','Durable and supportive shoes for playing tennis.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-017','Water Shoes','Footwear designed to protect feet in and around water.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-018','Ballet Flats','Comfortable slip-on shoes inspired by ballet slippers.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-019','Loafers','Slip-on shoes, often made of leather, for casual or smart-casual wear.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-020','Mules','Backless shoes, can be flat or heeled.','2025-05-12 13:10:53','2025-05-12 13:10:53'),('SHOE-CAT-UUID-021','Espadrilles','Casual shoes with rope soles and canvas or cotton uppers.','2025-05-12 13:10:53','2025-05-12 13:10:53');
+
+--
+-- Table structure for table `orders`
+--
+
+DROP TABLE IF EXISTS `orders`;
+CREATE TABLE `orders` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('Pending','Awaiting Payment','Processing','Shipped','Delivered','Cancelled') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Pending',
+  `total_amount` decimal(10,2) NOT NULL,
+  `shipping_street` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `shipping_barangay` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `shipping_city` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `shipping_province` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `shipping_country` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `shipping_postal_code` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payment_method` enum('Cash on Delivery','E-Payment') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payment_status` enum('Pending','Paid','Failed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Pending',
+  `epayment_type` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `epayment_reference_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `epayment_details` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `orders` VALUES ('0b455a72-f507-4c26-a937-a1a969e60b83','f27b9d75-ba6e-43a2-9ab9-6d62392aa5a6','2025-05-15 07:10:30','Delivered',29999.00,'Purok 5','Siempre Viva Sur','Mallig','Isabela','philippines','3323','Cash on Delivery','Pending','GCash','',NULL,'2025-05-15 07:10:30','2025-05-15 07:12:22'),('2407a291-348d-4a46-a990-49e3120d2623','2237519d-ae19-4ee9-8e72-2bef252e7faf','2025-05-12 14:51:44','Cancelled',5800.00,'Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','E-Payment','Pending','GCash','2153-5619-0893-6873',NULL,'2025-05-12 14:51:44','2025-05-12 14:53:45'),('24b5c421-7520-45bd-8746-d9ba59c1bce1','ccfd3c67-d599-47ac-b25f-aace68f67486','2025-05-15 05:41:29','Delivered',1500.00,'Arellano Ext','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','Cash on Delivery','Pending','GCash','',NULL,'2025-05-15 05:41:29','2025-05-15 05:58:54'),('4195f225-9914-4fa5-b85e-a618d4ca468b','2237519d-ae19-4ee9-8e72-2bef252e7faf','2025-05-12 14:56:27','Pending',560.00,'Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','Cash on Delivery','Pending','GCash','',NULL,'2025-05-12 14:56:27','2025-05-12 14:56:27'),('4ba53bdb-9bee-43da-b2bf-78ee04b0837f','2237519d-ae19-4ee9-8e72-2bef252e7faf','2025-05-12 15:01:14','Delivered',72199.62,'Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','Cash on Delivery','Pending','GCash','',NULL,'2025-05-12 15:01:14','2025-05-12 15:02:26'),('51404297-fad2-4479-8822-4d02617e3c4c','ccfd3c67-d599-47ac-b25f-aace68f67486','2025-05-12 14:45:47','Delivered',1899.99,'Arellano Ext','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','E-Payment','Pending','Maya','0773-3049-1597-3471',NULL,'2025-05-12 14:45:47','2025-05-12 14:49:10'),('54f33262-bdd9-401c-a2b9-be3669863810','2237519d-ae19-4ee9-8e72-2bef252e7faf','2025-05-15 07:00:54','Delivered',29999.00,'Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','Cash on Delivery','Pending','GCash','',NULL,'2025-05-15 07:00:54','2025-05-15 07:02:02'),('70686c44-1a50-4364-b75a-00552958ceaf','f27b9d75-ba6e-43a2-9ab9-6d62392aa5a6','2025-05-12 14:57:47','Cancelled',1899.99,'Purok 5','Siempre Viva Sur','Mallig','Isabela','philippines','3323','Cash on Delivery','Pending','GCash','',NULL,'2025-05-12 14:57:47','2025-05-12 14:58:33'),('82341fa7-9a74-49a5-9a8d-62fcdd651998','ccfd3c67-d599-47ac-b25f-aace68f67486','2025-05-09 13:35:48','Pending',2780.00,'Arellano Ext','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','E-Payment','Pending','GCash','9264-1430-4870-6388',NULL,'2025-05-09 13:35:48','2025-05-09 13:35:48'),('8fbd4dd6-8d13-4de4-ba4e-a8195191b8c9','f27b9d75-ba6e-43a2-9ab9-6d62392aa5a6','2025-05-12 14:54:43','Pending',560.00,'Purok 5','Siempre Viva Sur','Mallig','Isabela','philippines','3323','Cash on Delivery','Pending','GCash','',NULL,'2025-05-12 14:54:43','2025-05-12 14:54:43'),('ba6c632a-2120-49a4-9eda-0dc3ed590fdb','2237519d-ae19-4ee9-8e72-2bef252e7faf','2025-05-15 08:18:04','Cancelled',4199.00,'Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','Cash on Delivery','Pending','GCash','',NULL,'2025-05-15 08:18:04','2025-05-15 08:20:23'),('bd551569-ab8b-4b9c-8c2a-b04781329859','2237519d-ae19-4ee9-8e72-2bef252e7faf','2025-05-15 06:50:57','Cancelled',4199.00,'Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','Cash on Delivery','Pending','GCash','',NULL,'2025-05-15 06:50:57','2025-05-15 06:59:47'),('cfde49ee-b653-4364-9e60-2eea13a7db61','2237519d-ae19-4ee9-8e72-2bef252e7faf','2025-05-15 06:58:45','Cancelled',29999.00,'Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','Cash on Delivery','Pending','GCash','',NULL,'2025-05-15 06:58:45','2025-05-15 07:00:17'),('dedef7f8-9431-4ed7-ae57-87fed957202c','2237519d-ae19-4ee9-8e72-2bef252e7faf','2025-05-15 07:51:48','Delivered',29999.00,'Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','Cash on Delivery','Pending','GCash','',NULL,'2025-05-15 07:51:48','2025-05-15 07:53:37'),('f413ff90-b556-4dfd-a562-5dca707e03e9','ccfd3c67-d599-47ac-b25f-aace68f67486','2025-05-15 05:56:20','Cancelled',41990.00,'Arellano Ext','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','E-Payment','Pending','GCash','4182-6393-1729-9563',NULL,'2025-05-15 05:56:20','2025-05-15 07:00:11'),('f752f311-3613-4f79-9222-7a581478b2d7','2237519d-ae19-4ee9-8e72-2bef252e7faf','2025-05-12 14:59:11','Delivered',18999.90,'Lecaros','Ugac Sur','Tuguegarao City','Cagayan','Philippines','3500','Cash on Delivery','Pending','GCash','',NULL,'2025-05-12 14:59:11','2025-05-12 14:59:27');
+
+
+
+
+--
+-- Table structure for table `order_items`
+--
+
+DROP TABLE IF EXISTS `order_items`;
+CREATE TABLE `order_items` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `quantity` int unsigned NOT NULL,
+  `price_at_purchase` decimal(10,2) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `order_items` VALUES ('0f9b6b16-5969-4eb7-9f3c-956ab6cd6b75','2407a291-348d-4a46-a990-49e3120d2623','c87ceb20-7ffc-49a7-8134-a716373d5d2e',1,5800.00,'2025-05-12 14:51:44','2025-05-12 14:51:44'),('16162cac-0e2a-4bff-8f69-fbf76829265f','f413ff90-b556-4dfd-a562-5dca707e03e9','5bb3772e-f9fc-43f6-81e0-2458fb03da44',10,4199.00,'2025-05-15 05:56:20','2025-05-15 05:56:20'),('9889127b-65db-4250-84b5-b7917b7282ad','51404297-fad2-4479-8822-4d02617e3c4c','3d432267-9bee-41cf-9119-2204b1200edb',1,1899.00,'2025-05-12 14:45:47','2025-05-12 14:45:47'),('9f5465f3-4266-4b0d-b43b-b221e98b6b06','24b5c421-7520-45bd-8746-d9ba59c1bce1','7a277476-e8a9-43a9-8880-8719be7006a4',1,1500.00,'2025-05-15 05:41:29','2025-05-15 05:41:29'),('a22da99e-84d7-4f99-9832-25ea72f404b4','ba6c632a-2120-49a4-9eda-0dc3ed590fdb','5bb3772e-f9fc-43f6-81e0-2458fb03da44',1,4199.00,'2025-05-15 08:18:05','2025-05-15 08:18:05'),('b1b8d4f8-0310-471d-8517-de093a35c50f','70686c44-1a50-4364-b75a-00552958ceaf','3d432267-9bee-41cf-9119-2204b1200edb',1,1899.00,'2025-05-12 14:57:47','2025-05-12 14:57:47'),('bf5462ab-bd42-4838-80e8-0e032da4f9e2','4ba53bdb-9bee-43da-b2bf-78ee04b0837f','3d432267-9bee-41cf-9119-2204b1200edb',38,1899.00,'2025-05-12 15:01:15','2025-05-12 15:01:15'),('c3590b22-459d-4690-8741-74c7b3889219','82341fa7-9a74-49a5-9a8d-62fcdd651998','972a639e-220e-4260-a15b-2f29e90d8c22',1,2780.00,'2025-05-09 13:35:48','2025-05-09 13:35:48'),('d7c2e5ec-c238-424b-8883-9b7db2bca25e','f752f311-3613-4f79-9222-7a581478b2d7','3d432267-9bee-41cf-9119-2204b1200edb',10,1899.00,'2025-05-12 14:59:11','2025-05-12 14:59:11'),('df63e53d-793c-4b01-97fe-75658d68b567','4195f225-9914-4fa5-b85e-a618d4ca468b','fa6f6222-62af-4fd6-8755-cb605b384a4a',1,560.00,'2025-05-12 14:56:27','2025-05-12 14:56:27'),('f0ccb84c-2919-45c8-967e-4236083b5cf0','bd551569-ab8b-4b9c-8c2a-b04781329859','5bb3772e-f9fc-43f6-81e0-2458fb03da44',1,4199.00,'2025-05-15 06:50:58','2025-05-15 06:50:58'),('faf6619e-4c45-4362-86ad-17d040c2a16c','8fbd4dd6-8d13-4de4-ba4e-a8195191b8c9','fa6f6222-62af-4fd6-8755-cb605b384a4a',1,560.00,'2025-05-12 14:54:43','2025-05-12 14:54:43');
+
+
+--
+-- Table structure for table `password_resets`
+--
+
+DROP TABLE IF EXISTS `password_resets`;
+CREATE TABLE `password_resets` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expires_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`),
+  KEY `user_id` (`user_id`),
+  KEY `idx_email_password_resets` (`email`),
+  KEY `idx_token_password_resets` (`token`),
+  CONSTRAINT `password_resets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `password_resets` VALUES ('b3b5d836-37f5-4e25-be8b-63b3afef813a','ccfd3c67-d599-47ac-b25f-aace68f67486','2500589@usl.edu.ph','097943','2025-05-12 15:23:59','2025-05-12 13:13:59');
+
+--
+-- Table structure for table `product_categories`
+--
+
+DROP TABLE IF EXISTS `product_categories`;
+CREATE TABLE `product_categories` (
+  `product_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `category_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`product_id`,`category_id`),
+  KEY `category_id` (`category_id`),
+  CONSTRAINT `product_categories_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `product_categories_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `product_categories` VALUES ('85f579a7-9253-40c4-bab5-6c2bec252c5e','SHOE-CAT-UUID-001'),('d919c8ff-cf37-4513-942e-e96746c0c6ad','SHOE-CAT-UUID-001'),('fe2b4d71-cbee-4ec8-9df5-400c3fef6ab5','SHOE-CAT-UUID-001'),('3d432267-9bee-41cf-9119-2204b1200edb','SHOE-CAT-UUID-002'),('496eac39-9b9e-455d-bc3f-8be1c8250799','SHOE-CAT-UUID-002'),('b8a92000-ba71-400c-ac85-2c8e3f735b95','SHOE-CAT-UUID-002'),('53e15a12-b404-4421-9eea-cf8c738527c6','SHOE-CAT-UUID-003'),('05fb7eb6-85e5-4826-9414-aa8bccaeed3e','SHOE-CAT-UUID-004'),('e2bc46aa-e6cc-4be7-b49c-24a23d191ff3','SHOE-CAT-UUID-004'),('fa6e3216-b517-4eb0-b505-aa7c6431c14b','SHOE-CAT-UUID-004'),('7a277476-e8a9-43a9-8880-8719be7006a4','SHOE-CAT-UUID-005'),('8c43db74-62e6-401e-b040-6c49bb8bf0e0','SHOE-CAT-UUID-005'),('972a639e-220e-4260-a15b-2f29e90d8c22','SHOE-CAT-UUID-005'),('c87ceb20-7ffc-49a7-8134-a716373d5d2e','SHOE-CAT-UUID-005'),('d031e86d-5707-46ce-a09d-b4a641a7f2f7','SHOE-CAT-UUID-005'),('fa6f6222-62af-4fd6-8755-cb605b384a4a','SHOE-CAT-UUID-005'),('01e83406-6481-4338-b5c8-c9b32dd74898','SHOE-CAT-UUID-006'),('16b0fb96-dd0a-44b4-a53d-032b67cce6ef','SHOE-CAT-UUID-006'),('37ec6fea-27cf-4d45-ac40-8fa789de6845','SHOE-CAT-UUID-006'),('0d686504-4c86-419b-b215-cb41696774b6','SHOE-CAT-UUID-007'),('5bb3772e-f9fc-43f6-81e0-2458fb03da44','SHOE-CAT-UUID-007'),('b7132b50-7d41-4eb5-bbbc-0120e99859f7','SHOE-CAT-UUID-007'),('8efa3c85-c5a2-42e8-a235-6d78ab277762','SHOE-CAT-UUID-008'),('d59ececd-1239-489f-95f8-916de4f98404','SHOE-CAT-UUID-008'),('46f30172-9e79-42f1-8622-fdb416008baa','SHOE-CAT-UUID-009'),('5ccff7f1-c26b-4b99-8554-fb41de95b379','SHOE-CAT-UUID-009'),('a01d900a-1ab2-49c6-9b16-7036ed87b522','SHOE-CAT-UUID-009'),('04db5b06-3a84-4854-b926-2be7c7e74fb1','SHOE-CAT-UUID-010'),('7752cc1a-9be4-40e2-95c1-1d6bc3d423ad','SHOE-CAT-UUID-010'),('a0509153-ed09-433a-a977-3c40a8121017','SHOE-CAT-UUID-010'),('3bb1481d-7ebb-4af2-96c5-82cc94a03011','SHOE-CAT-UUID-011'),('5749f3fb-365b-4ceb-a088-80025be2ca5f','SHOE-CAT-UUID-011'),('9ba4dde8-f10e-4a7a-9363-c419065d5e4a','SHOE-CAT-UUID-012'),('f91d9ea8-0595-4678-8f0b-5bc7c166d202','SHOE-CAT-UUID-012'),('f96f5ec3-e50c-43b8-9e60-5714eb823785','SHOE-CAT-UUID-012'),('4ba16fa9-f6c0-44ba-aecd-696be16984a5','SHOE-CAT-UUID-013'),('dfc89bc6-45d4-4db3-804d-0c72c8eb02ac','SHOE-CAT-UUID-013'),('7fcac354-cb5e-4ff2-aab5-4b7ee85ec390','SHOE-CAT-UUID-014'),('9a4102d3-088b-4ce5-83de-b07b0c3d641b','SHOE-CAT-UUID-014'),('e75b7902-798f-4f65-8b41-ec75673dc78c','SHOE-CAT-UUID-014'),('2937a8d7-f246-47d7-a3f8-1b985f11c36e','SHOE-CAT-UUID-015'),('6484db29-7d85-4029-9d3f-1970b2ab2f7a','SHOE-CAT-UUID-015'),('f1acfa7f-32c8-432e-a7aa-831d7c40ef49','SHOE-CAT-UUID-015'),('34692632-cc48-41c9-a573-41e5daa156fc','SHOE-CAT-UUID-016'),('a826f8fe-373c-4346-a9f6-51d5c4386d6b','SHOE-CAT-UUID-016'),('623327a0-307c-4db4-9e3c-34c1c66c2c62','SHOE-CAT-UUID-017'),('e1a40b79-8385-4fb7-aa64-c2d1fb0345b2','SHOE-CAT-UUID-017'),('2a558562-64b4-411f-af1f-43bff0221f9e','SHOE-CAT-UUID-018'),('4f624b2d-d6df-468f-96e5-49386dbba256','SHOE-CAT-UUID-018'),('6aecee46-0250-4b5d-96f4-9a784d7ea37c','SHOE-CAT-UUID-018'),('4beda0a9-b0b1-4df8-b36c-61ac63b9ddb1','SHOE-CAT-UUID-019'),('5e73696b-1770-4230-b565-ac98702da87f','SHOE-CAT-UUID-019'),('dd619033-f54b-4d60-b573-c82e8479b79b','SHOE-CAT-UUID-019'),('4c5457ac-ef08-4786-aee6-ef9d6615eaae','SHOE-CAT-UUID-020'),('c01c2767-da25-40da-a105-1ed236371e2f','SHOE-CAT-UUID-020'),('3a83e6b4-9984-4132-87e9-36640c859ebc','SHOE-CAT-UUID-021'),('4502bda1-905b-4428-8dcc-e14178e6aa5b','SHOE-CAT-UUID-021'),('52a2bf06-4a70-4e16-9493-1eee3753bea1','SHOE-CAT-UUID-021');
+
+--
+-- Table structure for table `product_images`
+--
+
+DROP TABLE IF EXISTS `product_images`;
+CREATE TABLE `product_images` (
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_primary` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `product_images_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT INTO `product_images` VALUES ('004db579-bc1b-4eae-abda-ff5c5591b7a9','6484db29-7d85-4029-9d3f-1970b2ab2f7a','uploads/products/product_6824e742bfe8c5.42698766.jpg',1,'2025-05-14 18:55:57','2025-05-14 18:55:57'),('009ae0ab-f01b-4148-a4e4-bf8b9b08c4e6','9ba4dde8-f10e-4a7a-9363-c419065d5e4a','uploads/products/product_6824e26063ec97.23967527.jpg',1,'2025-05-14 18:35:06','2025-05-14 18:35:06'),('042397fb-2825-442a-9e07-72e2f1f7a3e8','53e15a12-b404-4421-9eea-cf8c738527c6','uploads/products/product_681ccf9e82fcb2.94114281.avif',1,'2025-05-08 15:37:04','2025-05-12 14:17:55'),('063c4178-2e87-4dec-bcdc-fa7e0d0851ed','2a558562-64b4-411f-af1f-43bff0221f9e','uploads/products/product_6824ddef334ad8.77128417.jpg',1,'2025-05-14 18:16:09','2025-05-14 18:16:09'),('09fc0d0d-5ccd-4c56-8941-98ef7f8a22de','f1acfa7f-32c8-432e-a7aa-831d7c40ef49','uploads/products/product_6824e6ddd060d8.63317458.jpg',1,'2025-05-14 18:54:16','2025-05-14 18:54:16'),('115fae0d-9428-47d4-ba2b-a14b2f219e58','4ba16fa9-f6c0-44ba-aecd-696be16984a5','uploads/products/product_6824d96e757629.13648555.jpg',1,'2025-05-14 17:56:56','2025-05-14 17:56:56'),('161bdb6b-2d3d-4b63-9989-03fda2562bcf','16b0fb96-dd0a-44b4-a53d-032b67cce6ef','uploads/products/product_6824dfc74e2d63.69915471.jpg',1,'2025-05-14 18:24:01','2025-05-14 18:24:01'),('1b2c0c73-028e-462b-845d-1036f5099d96','4beda0a9-b0b1-4df8-b36c-61ac63b9ddb1','uploads/products/product_6824e55167a451.28230850.jpg',1,'2025-05-14 18:47:39','2025-05-14 18:47:39'),('1b42a50c-dc67-48e3-b3a9-ccfc15a7a294','5ccff7f1-c26b-4b99-8554-fb41de95b379','uploads/products/product_682213535dc0e8.23628020.jpg',1,'2025-05-12 15:27:13','2025-05-12 15:27:13'),('227534dc-4478-43fa-ad4b-f1051a68c474','d031e86d-5707-46ce-a09d-b4a641a7f2f7','uploads/products/product_682214f7eefd37.87345005.jpg',1,'2025-05-12 15:34:14','2025-05-12 15:34:14'),('2b9e8842-f6d6-4800-8529-161c04394827','fe2b4d71-cbee-4ec8-9df5-400c3fef6ab5','uploads/products/product_6824e8c24858a2.08481305.jpg',1,'2025-05-14 19:02:20','2025-05-14 19:02:20'),('2bab06d3-b9f1-4435-a7f5-5ce7290af406','b7132b50-7d41-4eb5-bbbc-0120e99859f7','uploads/products/product_6824e9879b7676.06810502.jpg',1,'2025-05-14 19:05:37','2025-05-14 19:05:37'),('2cbb63b5-8848-47ce-b232-d1491695a3ff','7fcac354-cb5e-4ff2-aab5-4b7ee85ec390','uploads/products/product_6824e167eac5d3.80694962.jpg',1,'2025-05-14 18:30:58','2025-05-14 18:30:58'),('30b2ec1f-4a0b-4848-ae0b-cb2e9f314057','34692632-cc48-41c9-a573-41e5daa156fc','uploads/products/product_682214102e6522.73691931.jpg',1,'2025-05-12 15:30:22','2025-05-12 15:30:22'),('3b6c71ce-d493-412b-ad52-41ed3655422d','5bb3772e-f9fc-43f6-81e0-2458fb03da44','uploads/products/product_6824e9f13b2c85.98148577.jpg',1,'2025-05-14 19:07:23','2025-05-14 19:07:23'),('3e75eedf-b9fa-46ef-86d4-33c2edf9dc6b','fa6f6222-62af-4fd6-8755-cb605b384a4a','uploads/products/product_68220aae18c140.83236116.jpg',1,'2025-05-12 14:50:20','2025-05-12 14:50:20'),('4e4f72c7-b803-4e61-9bb6-8610258403f4','7a277476-e8a9-43a9-8880-8719be7006a4','uploads/products/product_68220a11152d24.51240120.png',1,'2025-05-12 14:47:43','2025-05-12 14:47:43'),('55da8538-8562-4953-82e1-5531c9ebac2c','c87ceb20-7ffc-49a7-8134-a716373d5d2e','uploads/products/product_681df65edf4016.43544375.avif',0,'2025-05-09 12:34:41','2025-05-09 12:34:41'),('57f6fd4b-de0d-4545-bf27-8be93f711968','05fb7eb6-85e5-4826-9414-aa8bccaeed3e','uploads/products/product_6824ceb61ebcb6.09826025.jpg',1,'2025-05-14 17:11:12','2025-05-14 17:57:14'),('5a9f458a-9554-4020-8b11-8f43fa534050','d59ececd-1239-489f-95f8-916de4f98404','uploads/products/product_68221208bcbb38.80459352.jpg',1,'2025-05-12 15:21:42','2025-05-12 15:21:42'),('5aac4816-e40d-4483-ab5c-98fab624dd94','4502bda1-905b-4428-8dcc-e14178e6aa5b','uploads/products/product_6822105730d278.70467789.jpg',1,'2025-05-12 15:14:29','2025-05-12 15:14:29'),('5b336bb6-017c-4ad6-baac-56b8df5519c5','04db5b06-3a84-4854-b926-2be7c7e74fb1','uploads/products/product_6824e474ad5a15.83724949.jpg',1,'2025-05-14 18:43:58','2025-05-14 18:43:58'),('5c55e1b4-5b99-423b-8fd4-6258707e441b','52a2bf06-4a70-4e16-9493-1eee3753bea1','uploads/products/product_682210a39e7430.25856011.jpg',1,'2025-05-12 15:15:45','2025-05-12 15:15:59'),('5d4af041-c038-4a16-9d35-615d4aae7bab','d919c8ff-cf37-4513-942e-e96746c0c6ad','uploads/products/product_6824e879bbe6e3.00642520.jpg',1,'2025-05-14 19:01:07','2025-05-14 19:01:07'),('5ed05039-8fae-4b1a-9e71-a80698a57a97','c87ceb20-7ffc-49a7-8134-a716373d5d2e','uploads/products/product_681df65ede9461.54372497.avif',1,'2025-05-09 12:34:41','2025-05-09 12:34:41'),('623165a1-38e4-421f-9614-0ebea776127d','46f30172-9e79-42f1-8622-fdb416008baa','uploads/products/product_682213917247d4.47085566.webp',1,'2025-05-12 15:28:15','2025-05-12 15:28:15'),('65cabf7b-89c5-4c8d-8ff1-6c75e5e8dff0','f96f5ec3-e50c-43b8-9e60-5714eb823785','uploads/products/product_6824e2abbfa4c4.80270435.jpg',1,'2025-05-14 18:36:22','2025-05-14 18:36:22'),('76396be2-cf37-42ae-9b51-d7492fe87a41','85f579a7-9253-40c4-bab5-6c2bec252c5e','uploads/products/product_6824e837857394.11810450.jpg',1,'2025-05-14 19:00:01','2025-05-14 19:00:01'),('769ea1d5-5c09-4106-bb65-354c5a218aa0','9a4102d3-088b-4ce5-83de-b07b0c3d641b','uploads/products/product_6824e0d5aced78.32985023.jpg',1,'2025-05-14 18:28:31','2025-05-14 18:28:31'),('7ad61ab5-b8cd-4ad5-96bd-8b7f965d4f85','e2bc46aa-e6cc-4be7-b49c-24a23d191ff3','uploads/products/product_6824d0e69ff6a1.24569323.jpg',1,'2025-05-14 17:20:32','2025-05-14 17:20:32'),('7be0b1a4-0127-4b80-ae8f-a88f1d3c3e8f','0d686504-4c86-419b-b215-cb41696774b6','uploads/products/product_6824e9c1e20915.67249673.jpg',1,'2025-05-14 19:06:36','2025-05-14 19:06:36'),('7d920cd2-1836-40bf-aa82-ae25e0ead5ee','623327a0-307c-4db4-9e3c-34c1c66c2c62','uploads/products/product_6822148f77ee52.82448148.jpg',1,'2025-05-12 15:32:29','2025-05-12 15:32:29'),('84444522-e4d4-4447-987b-1f65468191a0','dfc89bc6-45d4-4db3-804d-0c72c8eb02ac','uploads/products/product_6824da87b57c31.87087143.jpg',1,'2025-05-14 18:01:38','2025-05-14 18:01:38'),('869c5a42-ee42-4266-b64d-4793d9b276fb','3bb1481d-7ebb-4af2-96c5-82cc94a03011','uploads/products/product_682215491774d2.58169550.jpg',1,'2025-05-12 15:35:35','2025-05-12 15:35:35'),('876045e0-316b-4bc2-9496-badf9689d770','3d432267-9bee-41cf-9119-2204b1200edb','uploads/products/product_682208d80f33a9.54764205.avif',0,'2025-05-12 14:42:27','2025-05-12 14:44:12'),('895f1ba0-44cc-4ac8-828a-388c3224f238','f91d9ea8-0595-4678-8f0b-5bc7c166d202','uploads/products/product_6824e1d1cdec54.29516406.jpg',1,'2025-05-14 18:32:44','2025-05-14 18:32:44'),('8b5ab340-8165-489d-a29c-774c596e72ae','972a639e-220e-4260-a15b-2f29e90d8c22','uploads/products/product_681df6bd54b435.48596382.avif',1,'2025-05-09 12:36:18','2025-05-09 12:36:18'),('8d909cbc-b028-4daa-8690-cabc9eeef662','4c5457ac-ef08-4786-aee6-ef9d6615eaae','uploads/products/product_682211ac83e5c8.63740769.jpg',1,'2025-05-12 15:20:10','2025-05-12 15:20:10'),('8f8149b6-dc7f-4d30-bbef-8e3e61d7b903','53e15a12-b404-4421-9eea-cf8c738527c6','uploads/products/product_681ccf9e82c865.02534516.avif',0,'2025-05-08 15:37:04','2025-05-08 15:37:04'),('8ffdd1b7-9cda-48c5-939d-1fb7a4257a35','972a639e-220e-4260-a15b-2f29e90d8c22','uploads/products/product_681df6bf704b41.53803428.avif',0,'2025-05-09 12:36:18','2025-05-09 12:36:18'),('92b6bc45-dec5-47c7-b7dd-b585658010b3','496eac39-9b9e-455d-bc3f-8be1c8250799','uploads/products/product_6824e62c57c106.26478984.jpg',1,'2025-05-14 18:51:18','2025-05-14 18:51:18'),('9c4b9a5e-e06b-42db-89a2-664fbe410387','7752cc1a-9be4-40e2-95c1-1d6bc3d423ad','uploads/products/product_6824e3c0005513.87057043.jpg',1,'2025-05-14 18:40:58','2025-05-14 18:40:58'),('9d9c0005-29c1-46ba-b5c6-44a3267246ad','dd619033-f54b-4d60-b573-c82e8479b79b','uploads/products/product_6824e5002acde2.35423042.jpg',1,'2025-05-14 18:46:18','2025-05-14 18:46:18'),('a1120a71-f97a-4333-ac85-4b818eee0b3d','b8a92000-ba71-400c-ac85-2c8e3f735b95','uploads/products/product_6824e675c13ae5.36284406.jpg',1,'2025-05-14 18:52:32','2025-05-14 18:52:32'),('a1494a76-5e89-497d-8e39-a68b623cb028','6aecee46-0250-4b5d-96f4-9a784d7ea37c','uploads/products/product_6824dc1c0caf41.62873877.jpg',1,'2025-05-14 18:08:22','2025-05-14 18:08:22'),('a1d68287-9354-4a58-b0b0-40df5078174a','37ec6fea-27cf-4d45-ac40-8fa789de6845','uploads/products/product_6824e04e1f46a9.08298366.jpg',1,'2025-05-14 18:26:16','2025-05-14 18:26:16'),('a36c256e-1133-4a3c-a832-808b79d76000','4f624b2d-d6df-468f-96e5-49386dbba256','uploads/products/product_6824dc9e80c1c0.49040216.jpg',1,'2025-05-14 18:10:33','2025-05-14 18:17:09'),('a4174c03-1bcb-48d2-8dbd-359cb8563bbf','a826f8fe-373c-4346-a9f6-51d5c4386d6b','uploads/products/product_682213df8e3520.62826938.jpg',1,'2025-05-12 15:29:33','2025-05-12 15:29:33'),('ae0f2d5d-2be4-4abb-93bc-0b45dc3176a2','8c43db74-62e6-401e-b040-6c49bb8bf0e0','uploads/products/product_68220a787cbe81.39817600.jpg',1,'2025-05-12 14:49:27','2025-05-12 14:49:27'),('afda5c7e-d660-4357-96a8-1353599b71c9','3d432267-9bee-41cf-9119-2204b1200edb','uploads/products/product_682208f46e15d3.48495046.png',1,'2025-05-12 14:42:56','2025-05-14 17:11:28'),('b01157af-7fd4-4891-9926-bfdd2ad102b9','53e15a12-b404-4421-9eea-cf8c738527c6','uploads/products/product_681ccf9e829739.71356329.avif',0,'2025-05-08 15:37:04','2025-05-08 15:37:04'),('ba1600b7-9119-48c4-97a1-34f6a1f062b3','e75b7902-798f-4f65-8b41-ec75673dc78c','uploads/products/product_6824e11899bd14.73961864.jpg',1,'2025-05-14 18:29:38','2025-05-14 18:29:38'),('c5cbccb3-ab71-4762-a137-afdce64d8a28','2937a8d7-f246-47d7-a3f8-1b985f11c36e','uploads/products/product_6824e79e803152.61363324.jpg',1,'2025-05-14 18:57:28','2025-05-14 18:57:28'),('c754b2bc-38ee-42c1-9c98-fe25eaf125ef','c01c2767-da25-40da-a105-1ed236371e2f','uploads/products/product_68221176c86873.55068996.jpg',1,'2025-05-12 15:19:17','2025-05-12 15:19:17'),('ca45d333-0dfc-4247-bda0-522bf4278c91','a01d900a-1ab2-49c6-9b16-7036ed87b522','uploads/products/product_68221325075ca8.49589725.jpg',1,'2025-05-12 15:26:27','2025-05-12 15:26:27'),('d4213af7-7084-4319-847f-e6e4069cc56f','fa6e3216-b517-4eb0-b505-aa7c6431c14b','uploads/products/product_6824d157451ca0.89407473.jpg',1,'2025-05-14 17:22:25','2025-05-14 17:22:25'),('d8229cee-b0d2-4592-9493-46409184d3ef','01e83406-6481-4338-b5c8-c9b32dd74898','uploads/products/product_6824df612e1a53.59206905.jpg',1,'2025-05-14 18:22:19','2025-05-14 18:22:19'),('de78bc03-bf6b-41c5-b0fc-f0ed5483a3b9','5e73696b-1770-4230-b565-ac98702da87f','uploads/products/product_6824e5bf8c7d02.10245644.jpg',1,'2025-05-14 18:49:30','2025-05-14 18:49:30'),('e0d6199c-edb0-41ae-a599-a62b60157249','3a83e6b4-9984-4132-87e9-36640c859ebc','uploads/products/product_682210f3e2d985.25276002.jpg',1,'2025-05-12 15:17:06','2025-05-12 15:17:06'),('e9266c74-04e6-45ad-9d4b-bea2574244c8','53e15a12-b404-4421-9eea-cf8c738527c6','uploads/products/product_681ccf9e826059.47266859.avif',0,'2025-05-08 15:37:04','2025-05-12 14:13:43'),('f257bd1d-ec7f-4ab5-b8a3-44789720037f','8efa3c85-c5a2-42e8-a235-6d78ab277762','uploads/products/product_68221258093d00.21359020.jpg',1,'2025-05-12 15:23:02','2025-05-12 15:23:02'),('f89eb331-0323-4d5d-b90f-9eeccc0b65e9','5749f3fb-365b-4ceb-a088-80025be2ca5f','uploads/products/product_682215733b9c38.59065130.jpg',1,'2025-05-12 15:36:17','2025-05-12 15:36:17'),('f91da184-5c97-4c5a-ae84-aa91902b0bf9','a0509153-ed09-433a-a977-3c40a8121017','uploads/products/product_6824e404e3a136.29072379.jpg',1,'2025-05-14 18:42:07','2025-05-14 18:42:07'),('fcf55b36-f2bb-4aaa-acae-db77ddb4e84c','e1a40b79-8385-4fb7-aa64-c2d1fb0345b2','uploads/products/product_68221459c2af61.62734048.jpg',1,'2025-05-12 15:31:35','2025-05-12 15:31:35');
+
 

@@ -25,8 +25,8 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
 <section class="py-5 mb-4 rounded-4 position-relative overflow-hidden" style="min-height: 120px;">
     <div class="container position-relative z-2">
         <div class="row align-items-center">
-            <div class="col-lg-7">
-                <h1 class="display-4 fw-bold mb-3"><i class="bi bi-bag-heart"></i> Welcome to Leah's Shoe Store!</h1>
+            <div class="col-lg-12">
+                <h1 class="display-4 fw-bold mb-3"><i class="bi bi-bag-heart"></i> Welcome to ArLeJeen Step!</h1>
                 <p class="lead mb-4">Discover the latest arrivals, exclusive deals, and your favorite brands. Step up your style with our curated collection!</p>
                 <a href="#product-display-area" class="btn btn-light btn-lg fw-semibold shadow-sm"><i class="bi bi-shop"></i> Shop Now</a>
             </div>
@@ -39,21 +39,6 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
     <div class="row">
         <!-- Sidebar -->
         <aside class="col-lg-3 mb-4 mb-lg-0">
-            <div class="bg-white p-4 rounded-4 shadow-sm mb-4 border border-2 border-primary-subtle">
-                <h5 class="mb-3 text-primary"><i class="bi bi-search"></i> Search</h5>
-                <form id="productSearchForm" action="<?php echo $app_url; ?>index.php" method="GET">
-                    <input type="hidden" name="page" value="products">
-                    <div class="input-group mb-3">
-                        <input type="text" name="query" id="productSearchInput" class="form-control form-control-lg" placeholder="Search products..." autocomplete="off">
-                        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="bg-white p-4 rounded-4 shadow-sm mb-4 border border-2 border-info-subtle">
-                <h5 class="mb-3 text-info"><i class="bi bi-filter"></i> Filters</h5>
-                <div class="alert alert-info py-2 px-3 small mb-0"><i class="bi bi-info-circle"></i> Advanced filters coming soon.</div>
-            </div>
 
             <div class="bg-white p-4 rounded-4 shadow-sm border border-2 border-success-subtle">
                 <h5 class="mb-3 text-success"><i class="bi bi-tags"></i> Categories</h5>
@@ -76,11 +61,16 @@ $total_pages_new_arrivals = ($products_per_page > 0) ? ceil($total_products_new_
 
         <!-- Main Content -->
         <main class="col-lg-9">
-            <!-- Promotions/Announcements Placeholder -->
-            <section id="promotions" class="mb-5 p-4 bg-info bg-opacity-10 border border-info rounded-4 shadow-sm">
-                <h2 class="mb-2 text-info"><i class="bi bi-megaphone"></i> Special Announcements</h2>
-                <p class="mb-0">Check back soon for exciting offers and news!</p>
-            </section>
+            <div class="bg-white p-4 rounded-4 shadow-sm mb-4 border border-2 border-primary-subtle">
+                <h5 class="mb-3 text-primary"><i class="bi bi-search"></i> Search</h5>
+                <form id="productSearchForm" action="<?php echo $app_url; ?>index.php" method="GET">
+                    <input type="hidden" name="page" value="products">
+                    <div class="input-group mb-3">
+                        <input type="text" name="query" id="productSearchInput" class="form-control form-control-lg" placeholder="Search products..." autocomplete="off">
+                        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+            </div>
 
             <!-- Carousel for Newest Products -->
             <section id="newest-product-carousel" class="mb-5">

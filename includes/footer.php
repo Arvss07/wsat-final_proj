@@ -7,6 +7,7 @@
 <footer class="mt-5 py-4 bg-light text-center">
     <div class="container">
         <p class="mb-0">&copy; <?php echo date("Y"); ?> <?php echo htmlspecialchars($_ENV['APP_NAME'] ?? 'Shoe Store'); ?>. All Rights Reserved.</p>
+        <p>Aggabao Calosing Canicula Pascual</p>
     </div>
 </footer>
 
