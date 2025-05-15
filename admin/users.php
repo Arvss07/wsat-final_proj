@@ -323,16 +323,18 @@ if ($action === 'edit' && $user_id_to_edit) {
                     ?>>
                     <option value="">Select Role</option>
                     <?php foreach ($roles as $role): ?>
-                        <option value="<?php echo htmlspecialchars($role['id']); ?>"
-                            <?php
-                            if ($user_to_edit_data && $user_to_edit_data['role_id'] === $role['id']) { // For edit mode, select current role
-                                echo 'selected';
-                            } elseif ($action === 'add' && !($user_to_edit_data) && $role['name'] === 'Shopper') { // Default to Shopper for new users (when not editing)
-                                echo 'selected';
-                            }
-                            ?>>
-                            <?php echo htmlspecialchars($role['name']); ?>
-                        </option>
+                        <?php if (!($action === 'edit' && $role['name'] === 'Admin')): // Hide Admin role in edit mode ?>
+                            <option value="<?php echo htmlspecialchars($role['id']); ?>"
+                                <?php
+                                if ($user_to_edit_data && $user_to_edit_data['role_id'] === $role['id']) { // For edit mode, select current role
+                                    echo 'selected';
+                                } elseif ($action === 'add' && !($user_to_edit_data) && $role['name'] === 'Shopper') { // Default to Shopper for new users (when not editing)
+                                    echo 'selected';
+                                }
+                                ?>>
+                                <?php echo htmlspecialchars($role['name']); ?>
+                            </option>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 </select>
                 <?php
